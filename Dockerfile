@@ -6,6 +6,8 @@ WORKDIR /code
 # Install dependencies via <apt>
 
 RUN apt update && apt upgrade -y && apt install -y --fix-missing \
+        zip \
+        unzip \
         zlib1g-dev \
         libzip-dev \
     && pecl install pcov \
