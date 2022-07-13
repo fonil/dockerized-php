@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    backupGlobals="false"
+    beStrictAboutCoversAnnotation="true"
+    beStrictAboutOutputDuringTests="true"
+    beStrictAboutTodoAnnotatedTests="true"
+    bootstrap="vendor/autoload.php"
+    cacheResultFile=".cache/test-results"
+    colors="true"
+    convertDeprecationsToExceptions="false"
+    executionOrder="random"
+    failOnRisky="true"
+    failOnWarning="true"
+    forceCoversAnnotation="true"
+    printerClass="Codedungeon\PHPUnitPrettyResultPrinter\Printer"
+    resolveDependencies="true"
+    verbose="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
+>
+    <php>
+        <ini name="display_errors" value="1" />
+        <ini name="error_reporting" value="-1" />
+    </php>
+
+    <testsuites>
+        <testsuite name="Unit Tests">
+            <directory>tests/Unit</directory>
+        </testsuite>
+
+        <testsuite name="Feature Tests">
+            <directory>tests/Feature</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage
+        cacheDirectory=".cache/coverage"
+        disableCodeCoverageIgnore="true"
+        ignoreDeprecatedCodeUnits="true"
+        includeUncoveredFiles="true"
+        pathCoverage="false"
+        processUncoveredFiles="true"
+    >
+        <include>
+            <directory suffix=".php">app</directory>
+            <directory suffix=".php">tests</directory>
+        </include>
+    </coverage>
+</phpunit>
