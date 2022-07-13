@@ -4,6 +4,13 @@
     "license": "Unlicense",
     "description": "A skeleton to build containerized microservices with Docker and based on PHP",
     "keywords": ["skeleton", "docker", "nginx", "php", "composer", "phpunit", "php-cs-fixer", "phpmetrics", "phpstan", "paratest", "infection", "pcov", "php-parallel-lint", "php-result-printer"],
+    "authors": [
+        {
+            "name": "Alcides Ramos",
+            "email": "info@alcidesrc.com",
+            "homepage": "https://alcidesrc.com/"
+        }
+    ],
     "support": {
         "issues": "https://github.com/fonil/dockerized-php/issues",
         "source": "https://github.com/fonil/dockerized-php"
@@ -30,7 +37,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "UnitTests\\": "tests/Unit"
+            "UnitTests\\": "tests/Unit",
+            "FeatureTests\\": "tests/Feature"
         }
     },
     "config": {
