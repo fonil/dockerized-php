@@ -215,4 +215,4 @@ If you discover a security vulnerability within this project, please [open an is
 
 ## License
 
-This project is an open-sourced software licensed under the [The Unlicense](https://github.com/fonil/dockerized-php/main/LICENSE).
+This project is an open-sourced software licensed under the [The Unlicense](https://github.com/fonil/dockerized-php/blob/main/LICENSE).
