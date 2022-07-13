@@ -215,4 +215,4 @@ If you discover a security vulnerability within this project, please [open an is
 
 ## License
 
-Pint is open-sourced software licensed under the [The Unlicense](https://github.com/fonil/dockerized-php/main/LICENSE.md).
+This project is an open-sourced software licensed under the [The Unlicense](https://github.com/fonil/dockerized-php/main/LICENSE).
