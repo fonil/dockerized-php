@@ -3,7 +3,7 @@
     "type": "project",
     "license": "Unlicense",
     "description": "A skeleton to build containerized microservices with Docker and based on PHP",
-    "keywords": ["skeleton", "docker", "php"],
+    "keywords": ["skeleton", "docker", "nginx", "php", "composer", "phpunit", "php-cs-fixer", "phpmetrics", "phpstan", "paratest", "infection", "pcov", "php-parallel-lint", "php-result-printer"],
     "support": {
         "issues": "https://github.com/fonil/dockerized-php/issues",
         "source": "https://github.com/fonil/dockerized-php"

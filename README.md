@@ -1,6 +1,6 @@
 # Dockerized PHP
 
-> A skeleton to build containerized microservices with Docker and based on PHP
+> A skeleton to build containerized PHP microservices with Docker
 
 
 [TOC]
