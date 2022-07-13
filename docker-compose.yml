@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+    nginx:
+        image: nginx:stable-alpine
+        restart: unless-stopped
+        tty: true
+        working_dir: /code
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./src:/code
+            - ./etc/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+        depends_on:
+            - php-fpm
+        healthcheck:
+            test: ["CMD", "curl", "--silent", "--fail", "http://localhost/status/nginx"]
+            interval: 1m
+            timeout: 3s
+            retries: 5
+
+    php-fpm:
+        build: .
+        restart: unless-stopped
+        tty: true
+        working_dir: /code
+        volumes:
+            - ./src:/code
+            - ./usr/local/etc/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+            - ./usr/shared/healthchecks/php-fpm.sh:/usr/shared/healthchecks/php-fpm.sh:ro
+        healthcheck:
+            test: ["CMD", "/usr/shared/healthchecks/php-fpm.sh"]
+            interval: 1m
+            timeout: 3s
+            retries: 5
