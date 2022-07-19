@@ -1,9 +1,9 @@
 linter: CMD=./vendor/bin/parallel-lint -e php -j 10 --colors ./app ./tests
-phpcsfixer: CMD=./vendor/bin/php-cs-fixer fix --using-cache=no --ansi
+phpinsights: CMD=./vendor/bin/phpinsights --fix
 
-linter phpcsfixer:
+linter phpinsights:
 	$(call runDockerComposeExec,$(CMD))
 
 # SHORTCUTS
 
-fix: linter phpcsfixer  ## Fixes the source code to follow the standards
+fix: linter phpinsights  ## Fixes the source code to follow the standards
