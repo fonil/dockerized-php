@@ -23,7 +23,7 @@ This project has been built using the following tools:
 - [PHP-FPM](https://www.php.net/manual/en/install.fpm.php) - FastCGI Process Manager is a primary PHP implementation containing some features (mostly) useful for heavy-loaded sites.
   - [Infection](https://infection.github.io/) - PHP Mutation Testing Framework.
   - [PCOV](https://github.com/krakjoe/pcov) - A self contained CodeCoverage for PHP.
-  - [PHP-CS-Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer) - PHP Coding Standards Fixer.
+  - [PHP-Insights](https://phpinsights.com/) - The perfect starting point to analyze the code quality of your PHP projects.
   - [PHP-Parallel-Lint](https://github.com/php-parallel-lint/PHP-Parallel-Lint) - PHP Parallel Syntax Analyzer.
   - [PHPMetrics](https://phpmetrics.org/) - PHP Metrics.
   - [PHPStan](https://phpstan.org/) - PHP Static Analyzer.
@@ -171,7 +171,7 @@ A *Makefile* is provided with some predefined commands:
 ~/path/to/my-new-project$ make fix
 ```
 
-> Note that this command is an alias that executes PHP Linter + PHP-CS-Fixer
+> Note that this command is an alias that executes PHP Linter + PHP Insights
 
 #### Dealing with Tests
 
