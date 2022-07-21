@@ -1,7 +1,7 @@
 {
     "name": "alcidesrc/dockerized-php",
     "type": "project",
-    "license": "Unlicense",
+    "license": "MIT",
     "description": "A skeleton to build containerized microservices with Docker and based on PHP",
     "keywords": ["skeleton", "docker", "nginx", "php", "composer", "phpunit", "php-cs-fixer", "phpmetrics", "phpstan", "paratest", "infection", "pcov", "php-parallel-lint", "php-result-printer"],
     "authors": [
