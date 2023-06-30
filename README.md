@@ -8,11 +8,15 @@
 
 ## Summary
 
-This repository allows to create a Docker *microservice* to run CLI applications built on top of PHP.
+This repository allows to create a Docker *microservice* to run applications powered by PHP.
 
 The Docker image is based on **php:8.2.7-fpm-alpine3.18** in order to keep images as much lightweight as possible.
 
-> Current Docker image has a size of 91.0MB
+### Highlights
+
+- Unified environment to build CLI or web applications
+- Lightweight: main service Docker image has a size of 91.0MB
+- Supports SSL on local domains
 
 ## Requirements
 
@@ -49,6 +53,13 @@ $ git clone git@github.com:fonil/dockerized-php-dev-env.git .
 ```
 
 ### Conventions
+
+#### Website Domain
+
+The default website domain is **website.demo**
+
+> You can customize the domain(s) at `./etc/caddy/Caddyfile`
+> `Makefile` has a predefined constant with current domain name. Please review the _Makefile_ target files to adjust the commands to your requirements. 
 
 #### Directory structure
 
