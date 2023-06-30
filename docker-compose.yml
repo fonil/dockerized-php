@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        container_name: app
+        restart: unless-stopped
+        tty: true
+        working_dir: /code
+        volumes:
+            - ./src:/code
+            - ./usr/local/etc/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+            - ./usr/shared/healthchecks/php-fpm.sh:/usr/shared/healthchecks/php-fpm.sh:ro
+        healthcheck:
+            test: ["CMD", "/usr/shared/healthchecks/php-fpm.sh"]
+            interval: 10s
+            timeout: 1s
+            retries: 3

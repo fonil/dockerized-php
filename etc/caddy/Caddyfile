@@ -1,0 +1,15 @@
+:80 {
+    respond /caddy-health-check 200
+}
+
+website.demo {
+    tls internal
+
+    root * /code/public
+
+    encode zstd gzip
+
+    php_fastcgi app:9000
+
+    file_server
+}

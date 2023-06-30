@@ -1,0 +1,27 @@
+version: '3.9'
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+services:
+    caddy:
+        image: caddy:alpine
+        container_name: caddy
+        restart: unless-stopped
+        volumes:
+            - caddy_data:/data
+            - caddy_config:/config
+            - ./etc/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+            - ./src:/code
+        ports:
+            - 80:80
+            - 443:443
+            - 443:443/udp
+        depends_on:
+            - app
+        healthcheck:
+            test: [ "CMD", "wget", "--spider", "http://localhost/caddy-health-check" ]
+            interval: 10s
+            timeout: 1s
+            retries: 3

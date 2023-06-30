@@ -1,0 +1,23 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": [
+            "app",
+            "tests"
+        ]
+    },
+    "logs": {
+        "text": "./output/logs/infection.log",
+        "html": "./output/logs/infection.html",
+        "summary": "./output/logs/infection-summary.log",
+        "json": "./output/logs/infection-log.json",
+        "perMutator": "./output/logs/infection-per-mutator.md"
+    },
+    "timeout": 60,
+    "phpUnit": {
+        "configDir": "."
+    },
+    "mutators": {
+        "@default": true
+    }
+}
