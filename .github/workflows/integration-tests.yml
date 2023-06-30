@@ -1,0 +1,49 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        php: ['8.1', '8.2']
+        dependency-version: [prefer-lowest, prefer-stable]
+
+    name: PHP ${{ matrix.php }} - ${{ matrix.os }} - ${{ matrix.dependency-version }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup PHP with PCOV
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ runner.php }}
+        coverage: pcov
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate --working-dir=./src --strict
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install dependencies
+      run: composer install --working-dir=./src --prefer-dist --no-progress
+
+    - name: Integration Tests
+      run: ./src/vendor/bin/phpunit --configuration=./src/phpunit.xml
