@@ -1,4 +1,4 @@
-[![Integration Tests](https://github.com/fonil/dockerized-php/actions/workflows/integration-tests.yml/badge.svg)](https://github.com/fonil/dockerized-php/actions/workflows/integration-tests.yml)
+[![Integration Tests](https://github.com/fonil/dockerized-php-dev-env/actions/workflows/integration-tests.yml/badge.svg)](https://github.com/fonil/dockerized-php-dev-env/actions/workflows/integration-tests.yml)
 
 # Dockerized PHP Development Environment
 
