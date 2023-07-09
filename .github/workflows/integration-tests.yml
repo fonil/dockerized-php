@@ -51,3 +51,6 @@ jobs:
 
     - name: Coding Standards
       run: ./src/vendor/bin/phpcs --standard=./src/phpcs.xml ./src/app ./src/tests
+
+    - name: PHPStan
+      run: ./src/vendor/bin/phpstan analyse --configuration=./src/phpstan.neon.dist ./src/app ./src/tests
