@@ -50,4 +50,4 @@ jobs:
       run: ./src/vendor/bin/phpunit --configuration=./src/phpunit.xml
 
     - name: Coding Standards
-      run: ./src/vendor/bin/phpcs ./src/app ./src/tests
+      run: ./src/vendor/bin/phpcs --standard=./src/phpcs.xml ./src/app ./src/tests
