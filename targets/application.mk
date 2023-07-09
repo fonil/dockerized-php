@@ -15,6 +15,12 @@ info: ## Application: displays the php.init details
 linter: ## Application: runs the PHP Linter in parallel mode
 	$(call runDockerComposeExec,./vendor/bin/parallel-lint -e php -j 10 --colors ./app ./tests)
 
+phpcs: ## Application: runs the PHPCodeSniffer to fix possible issues
+	$(call runDockerComposeExec,./vendor/bin/phpcs --standard=PSR12 ./app ./tests)
+
+phpcbf: ## Application: runs the PHPCodeBeautifier to fix possible issues
+	$(call runDockerComposeExec,./vendor/bin/phpcbf --standard=PSR12 ./app ./tests)
+
 phpinsights: ## Application: runs the PHPInsights to fix possible issues
 	$(call runDockerComposeExec,./vendor/bin/phpinsights --fix)
 

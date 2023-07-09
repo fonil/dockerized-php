@@ -12,6 +12,8 @@ use SlopeIt\ClockMock\ClockMock;
  * @internal
  *
  * @coversNothing
+ *
+ * @phpstan-type DataProviderEntry array{string, string}
  */
 final class FooTest extends TestCase
 {
@@ -33,12 +35,15 @@ final class FooTest extends TestCase
      */
     public function testInvoke(string $expectedResult, string $expectedLog): void
     {
-        $result = (new Foo)();
+        $result = (new Foo())();
 
         $this->assertEquals($expectedResult, $result);
-        $this->assertStringContainsString($expectedLog, file_get_contents($_ENV['APP_LOG_STREAM']));
+        $this->assertStringContainsString($expectedLog, (string) file_get_contents($_ENV['APP_LOG_STREAM']));
     }
 
+    /**
+     * @return array<int, DataProviderEntry>
+     */
     public function dataProviderForInvoke(): array
     {
         return [

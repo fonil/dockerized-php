@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!-- @see https://pear.php.net/manual/en/package.php.php-codesniffer.annotated-ruleset.php -->
+<ruleset name= "Dockerized PHP Dev Env PHPCS Rules">
+
+    <description>PHPCS ruleset for Example app.</description>
+
+    <file>app</file>
+    <file>tests</file>
+
+    <!-- Show progress of the run -->
+    <arg value= "p"/>
+
+    <!-- Show sniff codes in all reports -->
+    <arg value= "s"/>
+
+    <!-- Our base rule: set to PSR12 -->
+
+    <rule ref="PSR12">
+        <exclude name="PSR12.Operators.OperatorSpacing.NoSpaceBefore"/>
+        <exclude name="PSR12.Operators.OperatorSpacing.NoSpaceAfter"/>
+    </rule>
+
+    <rule ref= "Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="120"/>
+        </properties>
+    </rule>
+
+    <rule ref="PSR1.Methods.CamelCapsMethodName.NotCamelCaps">
+        <exclude-pattern>tests/</exclude-pattern>
+    </rule>
+
+</ruleset>
