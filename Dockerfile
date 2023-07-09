@@ -2,37 +2,20 @@
 FROM --platform=linux/amd64 php:8.2.7-fpm-alpine3.18
 
 # Docker image context
-LABEL Maintainer="Alcides Ramos <info@alcidesramos.com>"
-LABEL Description="Lightweight PHP8-FPM environment with PCOV"
 
-# Install dependencies via package manager
+LABEL Maintainer="Alcides Ramos <info@alcidesramos.com>"
+LABEL Description="Lightweight PHP8-FPM environment"
+
+# Install dependencies
 
 RUN apk update && apk add --no-cache \
-        libzip-dev \
-        zip \
-        unzip \
         bash \
         fcgi \
-    && docker-php-ext-install zip
-
-# Install PCOV
-
-RUN apk update && apk add --no-cache \
-        g++ \
-        autoconf \
-        make \
-        pcre2-dev \
-    && pecl install pcov \
-    && docker-php-ext-enable pcov \
-    && apk del --no-cache \
-        g++ \
-        autoconf \
-        make \
-        pcre2-dev
-
-# Install Composer
-
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+    && curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o - | sh -s \
+        @composer \
+        pcov \
+        uopz \
+        zip
 
 # Define the working directory
 
