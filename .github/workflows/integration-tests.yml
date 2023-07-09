@@ -28,6 +28,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ runner.php }}
+        extensions: uopz
         coverage: pcov
 
     - name: Validate composer.json and composer.lock
