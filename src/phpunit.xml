@@ -21,7 +21,7 @@
         <ini name="display_errors" value="1" />
         <ini name="error_reporting" value="-1" />
 
-        <env name="APP_LOG_STREAM" value="/code/output/.phpunit-log-stream" />
+        <env name="APP_LOG_STREAM" value="./output/.phpunit-log-stream" />
     </php>
 
     <extensions>
