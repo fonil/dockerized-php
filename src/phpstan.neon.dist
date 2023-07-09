@@ -1,0 +1,8 @@
+parameters:
+	paths:
+		- app
+		- tests
+	level: 9
+	ignoreErrors:
+	excludePaths:
+	checkGenericClassInNonGenericObjectType: false
