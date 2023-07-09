@@ -15,7 +15,7 @@ The Docker image is based on **php:8.2.7-fpm-alpine3.18** in order to keep image
 ### Highlights
 
 - Unified environment to build CLI or web applications
-- Lightweight: main service Docker image has a size of 91.0MB
+- Lightweight: main service Docker image has a size of 83.0MB
 - Supports SSL on local domains
 
 ## Requirements
@@ -32,10 +32,11 @@ This project has been built using the following tools:
 - [Docker](https://www.docker.com/) - An open source containerization platform.
 - [Bash](https://www.gnu.org/software/bash/) - The GNU Project's shell.
 - [Make](https://www.gnu.org/software/make/) - GNU make utility to maintain groups of programs.
-- [caddy](https://caddyserver.com/) - Caddy 2 is a powerful, enterprise-ready, **open source web server** with **automatic HTTPS** written in Go.
+- [Caddy Server](https://caddyserver.com/) - Caddy 2 is a powerful, enterprise-ready, **open source web server** with **automatic HTTPS** written in Go.
 - [PHP-FPM](https://www.php.net/manual/en/install.fpm.php) - FastCGI Process Manager is a primary PHP implementation containing some features (mostly) useful for heavy-loaded sites.
   - [Infection](https://infection.github.io/) - PHP Mutation Testing Framework.
   - [PCOV](https://github.com/krakjoe/pcov) - A self contained CodeCoverage for PHP.
+  - [UOPZ](https://www.php.net/manual/en/book.uopz.php) - User Operations for Zend
   - [PHP-Insights](https://phpinsights.com/) - The perfect starting point to analyze the code quality of your PHP projects.
   - [PHP-Parallel-Lint](https://github.com/php-parallel-lint/PHP-Parallel-Lint) - PHP Parallel Syntax Analyzer.
   - [PHPStan](https://phpstan.org/) - PHP Static Analyzer.
@@ -56,7 +57,7 @@ $ git clone git@github.com:fonil/dockerized-php-dev-env.git .
 
 #### Website Domain
 
-The default website domain is **website.demo**
+The default website domain is **https://website.demo**
 
 > You can customize the domain(s) at `./etc/caddy/Caddyfile`
 > `Makefile` has a predefined constant with current domain name. Please review the _Makefile_ target files to adjust the commands to your requirements. 
@@ -87,16 +88,45 @@ The default website domain is **website.demo**
 | ./src/public | The `public` directory contains the `index.php` file which bootstraps the application. |
 | ./src/tests  | The `tests` directory contains your automated tests.         |
 | ./src/vendor | The `vendor` directory contains your [Composer](https://getcomposer.org/) dependencies. |
+| ./src/.env   | Environment file with customized variables.                  |
 
 #### Logging
 
-The application logs to **standard output** by default.
+The application logs to `STDOUT` by default.
+
+##### $_ENV
+
+Current application uses `./src/.env` file to initialize the environment log application stream. 
+
+By default this file contains:
+
+```text 
+APP_LOG_STREAM="php://stdout"
+```
+
+And overrides the `$_ENV` global container by adding a new entry:
+
+```php
+$_ENV['APP_LOG_ENTRY'] = "php://stdout";
+```
+
+###### Testing
+
+To avoid see logs sent to `STDOUT` during the tests execution, the `$_ENV['APP_LOG_STREAM']` is overwritten by `/tmp/phpunit-log-stream`, a container local file reference.  
+
+> Please check **phpunit.xml** and customize the **APP_LOG_STREAM** variable to your requirements.  
+
+##### Mocking Time
+
+To allow testing with date and/or time variations, a dependency has been added to `composer.json` called `slope-it/clock-mock` which provides a way for mocking the current timestamp used by PHP for \DateTime(Immutable) objects and date/time related functions. 
+
+> It requires the [uopz extension](https://github.com/krakjoe/uopz)
 
 #### Default Application
 
 Default application just print outs `Class [ App\Providers\Foo ]` from `Foo` final class placed at `src/app/Providers`.
 
-Default unit test just verifies the class returns the correct namespace.
+Default unit test just verifies the class returns the correct namespace and checks the log message by reading the contents from `$_ENV['APP_LOG_STREAM']`.
 
 > This default application has being created as a skeleton and it should be replaced by your business logic.
 
@@ -121,7 +151,7 @@ A *Makefile* is provided with some predefined commands:
 · paratest                       Application: runs the PHPUnit test suite in parallel mode
 · phpunit                        Application: runs the PHPUnit test suite
 · phpstan                        Application: runs PHPStan
-· open                           Application: opens the website domain with your preferred browser
+· run                            Application: opens the website domain with your preferred browser
 · composer-dump                  Composer: runs <composer dump-auto>
 · composer-install               Composer: runs <composer install>
 · composer-remove                Composer: runs <composer remove>
@@ -131,7 +161,7 @@ A *Makefile* is provided with some predefined commands:
 · build                          Docker: builds the service
 · down                           Docker: stops the service
 · up                             Docker: starts the service
-· up-with-caddy                  Docker: starts the service + Caddy webserver
+· full                           Docker: starts the service + Caddy webserver
 · logs                           Docker: exposes the service logs
 · restart                        Docker: restarts the service
 · bash                           Docker: stablish a bash session into main container
@@ -141,8 +171,7 @@ A *Makefile* is provided with some predefined commands:
 
 ```bash
 ~/path/to/my-new-project$ make build
-~/path/to/my-new-project$ make up
-~/path/to/my-new-project$ make open
+~/path/to/my-new-project$ make run
 ```
 
 ##### About `make open` command
@@ -152,8 +181,9 @@ This command is a shortcut of multiple tasks needs to be done in order to expose
 Those tasks are:
 
 1. Add the website domain to `/etc/hosts` file.
-2. Ensure the service has been started in cooperation with Caddy web server.
-3. Ensure the application has PHP dependencies properly installed.
+2. Ensure the PHP-FPM service has been started. 
+3. Ensure the Caddy service has been started.
+4. Ensure the application has PHP dependencies properly installed.
 
 ###### Certificate Authority (CA) & SSL Certificate
 

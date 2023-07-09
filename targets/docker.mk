@@ -7,7 +7,7 @@ down: ## Docker: stops the service
 up: ## Docker: starts the service
 	$(call runDockerCompose,--file docker-compose.yml up --remove-orphans --detach)
 
-up-with-caddy: ## Docker: starts the service + Caddy webserver
+full: ## Docker: starts the service + Caddy webserver
 	$(call runDockerCompose,--file docker-compose.yml --file docker-compose.caddy.yml up --remove-orphans --detach)
 
 logs: ## Docker: exposes the service logs

@@ -47,7 +47,7 @@ add-to-hosts: # Application: adds the website domain to /etc/hosts file
 # MISCELANEOUS
 ###
 
-open: add-to-hosts up-with-caddy composer-install ## Application: opens the website domain with your preferred browser
+run: add-to-hosts up full composer-install ## Application: opens the website domain with your preferred browser
 	$(call showInfo,"Opening [ $(WEBSITE_URL) ] with your preferred browser")
 	$(call showInfo,"You can press [ Ctrl+C ] to return the terminal")
 	$(call showAlert,"If [ $(WEBSITE_URL) ] has a SSL certificate issue please execute:",$(YELLOW)make install-authority-certificate$(RESET))
