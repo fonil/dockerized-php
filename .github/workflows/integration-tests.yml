@@ -47,3 +47,9 @@ jobs:
 
     - name: Integration Tests
       run: ./src/vendor/bin/phpunit --configuration=./src/phpunit.xml
+
+    - name: PHPStan
+      run: ./src/vendor/bin/phpstan analyse --level=max app tests
+
+    - name: Coding Standards
+      run: ./src/vendor/bin/phpcs app tests
