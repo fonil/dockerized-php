@@ -29,13 +29,13 @@ phpinsights: ## Application: runs the PHPInsights to fix possible issues
 ###
 
 infection: ## Application: runs the Infection test suite
-	$(call runDockerComposeExec,./vendor/bin/infection --configuration=infection.json --threads=3 --coverage=./output/reports/coverage --ansi)
+	$(call runDockerComposeExec,./vendor/bin/infection --configuration=infection.json --threads=3 --coverage=/code/output/reports/coverage --ansi)
 
 paratest: ## Application: runs the PHPUnit test suite in parallel mode
-	$(call runDockerComposeExec,php -d pcov.enabled=1 ./vendor/bin/paratest --passthru-php="'-d' 'pcov.enabled=1'" --coverage-text --coverage-xml=./output/reports/coverage/xml --coverage-html=./output/reports/coverage/html --log-junit=./output/reports/coverage/junit.xml)
+	$(call runDockerComposeExec,php -d pcov.enabled=1 ./vendor/bin/paratest --passthru-php="'-d' 'pcov.enabled=1'" --coverage-text --coverage-xml=/code/output/reports/coverage/xml --coverage-html=/code/output/reports/coverage/html --log-junit=/code/output/reports/coverage/junit.xml)
 
 phpunit: ## Application: runs the PHPUnit test suite
-	$(call runDockerComposeExec,./vendor/bin/phpunit --coverage-text --coverage-xml=./output/reports/coverage/xml --coverage-html=./output/reports/coverage/html --log-junit=./output/reports/coverage/junit.xml --coverage-cache ./output/.cache/coverage)
+	$(call runDockerComposeExecAsUser,./vendor/bin/phpunit --coverage-text --coverage-xml=/code/output/reports/coverage/xml --coverage-html=/code/output/reports/coverage/html --log-junit=/code/output/reports/coverage/junit.xml --coverage-cache /code/output/.cache/coverage)
 
 phpstan: ## Application: runs PHPStan
 	$(call runDockerComposeExec,./vendor/bin/phpstan analyse --level 9 --memory-limit 1G --ansi ./app ./tests)

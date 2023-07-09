@@ -1,5 +1,5 @@
 build: ## Docker: builds the service
-	$(call runDockerCompose,build)
+	$(call runDockerCompose,build,--build-arg UNAME=$(UNAME) --build-arg GNAME=$(GNAME) --build-arg UID=$(UID) --build-arg GID=$(GID))
 
 down: ## Docker: stops the service
 	$(call runDockerCompose,down --remove-orphans)

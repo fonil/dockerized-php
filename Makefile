@@ -28,14 +28,20 @@ else
 	RESET   := ""
 endif
 
+UID   := $(shell id --user)
+GID   := $(shell id --group)
+UNAME := $(shell id --user --name)
+GNAME := $(shell id --group --name)
+
 WEBSITE_DOMAIN      = website.demo
 WEBSITE_URL         = https://$(WEBSITE_DOMAIN)
 
 SERVICE_NAME_APP    = app
 SERVICE_NAME_CADDY  = caddy
 
-DOCKER_COMPOSE 		= @docker-compose
-DOCKER_COMPOSE_EXEC = $(DOCKER_COMPOSE) exec $(SERVICE_NAME_APP)
+DOCKER_COMPOSE              = @docker-compose
+DOCKER_COMPOSE_EXEC         = $(DOCKER_COMPOSE) exec $(SERVICE_NAME_APP)
+DOCKER_COMPOSE_EXEC_AS_USER = $(DOCKER_COMPOSE) exec --user=$(UNAME) $(SERVICE_NAME_APP)
 
 ###
 # FUNCTIONS
@@ -73,6 +79,12 @@ endef
 # $(1)=CMD $(2)=OPTIONS
 define runDockerComposeExec
 	$(DOCKER_COMPOSE_EXEC) $(1) $(2)
+	$(call taskDone)
+endef
+
+# $(1)=CMD $(2)=OPTIONS
+define runDockerComposeExecAsUser
+	$(DOCKER_COMPOSE_EXEC_AS_USER) $(1) $(2)
 	$(call taskDone)
 endef
 

@@ -7,11 +7,11 @@
         ]
     },
     "logs": {
-        "text": "./output/logs/infection.log",
-        "html": "./output/logs/infection.html",
-        "summary": "./output/logs/infection-summary.log",
-        "json": "./output/logs/infection-log.json",
-        "perMutator": "./output/logs/infection-per-mutator.md"
+        "text": "/code/output/logs/infection.log",
+        "html": "/code/output/logs/infection.html",
+        "summary": "/code/output/logs/infection-summary.log",
+        "json": "/code/output/logs/infection-log.json",
+        "perMutator": "/code/output/logs/infection-per-mutator.md"
     },
     "timeout": 60,
     "phpUnit": {
