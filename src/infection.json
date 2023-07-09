@@ -13,6 +13,7 @@
         "json": "./output/logs/infection-log.json",
         "perMutator": "./output/logs/infection-per-mutator.md"
     },
+    "tmpDir": "./output",
     "timeout": 60,
     "phpUnit": {
         "configDir": "."

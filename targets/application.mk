@@ -29,7 +29,7 @@ phpinsights: ## Application: runs the PHPInsights to fix possible issues
 ###
 
 infection: ## Application: runs the Infection test suite
-	$(call runDockerComposeExec,./vendor/bin/infection --configuration=infection.json --threads=3 --coverage=/code/output/reports/coverage --ansi)
+	$(call runDockerComposeExecAsUser,./vendor/bin/infection --configuration=infection.json --threads=3 --coverage=/code/output/reports/coverage --ansi)
 
 paratest: ## Application: runs the PHPUnit test suite in parallel mode
 	$(call runDockerComposeExec,php -d pcov.enabled=1 ./vendor/bin/paratest --passthru-php="'-d' 'pcov.enabled=1'" --coverage-text --coverage-xml=/code/output/reports/coverage/xml --coverage-html=/code/output/reports/coverage/html --log-junit=/code/output/reports/coverage/junit.xml)
