@@ -176,6 +176,8 @@ A *Makefile* is provided with some predefined commands:
 ~/path/to/my-new-project$ make run
 ```
 
+> It is important to use `make build` command to create the Docker base image due the _Makefile_ command passes to Dockerfile file your host user information, required to create an internal user into the application container with the same name, group and ids. This way avoids file permission conflicts on internally created files that needs to be shared with the host. 
+
 ##### About `make open` command
 
 This command is a shortcut of multiple tasks needs to be done in order to expose the application throw your preferred web browser. 
@@ -207,6 +209,10 @@ Caddy uses HTTPS **by default**. In order to avoid SSL certificates issues you m
 
 ```bash
 ~/path/to/my-new-project$ make phpinsights
+```
+
+```bash
+~/path/to/my-new-project$ make phpstan
 ```
 
 #### Dealing with Tests
