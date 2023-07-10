@@ -14,9 +14,9 @@ The Docker image is based on **php:8.2.7-fpm-alpine3.18** in order to keep image
 
 ### Highlights
 
-- Unified environment to build CLI or web applications
-- Lightweight: main service Docker image has a size of 83.0MB
-- Supports SSL on local domains
+- Unified environment to build CLI or web applications with PHP.
+- Lightweight: main service Docker image only requires 83.0MB.
+- Supports SSL on local domains thanks to Caddy.
 
 ## Requirements
 
@@ -89,6 +89,8 @@ The default website domain is **https://website.demo**
 | ./src/tests  | The `tests` directory contains your automated tests.         |
 | ./src/vendor | The `vendor` directory contains your [Composer](https://getcomposer.org/) dependencies. |
 | ./src/.env   | Environment file with customized variables.                  |
+
+> If you take a look to [docker-compose.yml#L13](https://github.com/fonil/dockerized-php-dev-env/blob/main/docker-compose.yml#L13) this folder is mounted as a volume into the application container. With this setup you are able to modify the source code with your preferred IDE on your host, and automatically have those changes in the container 😃
 
 #### Logging
 
