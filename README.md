@@ -8,41 +8,41 @@
 
 ## Summary
 
-This repository allows to create a Docker *microservice* to run applications powered by PHP.
+This repository allows to create a Docker services and/or microservices built with PHP.
 
 The Docker image is based on **php:8.2.7-fpm-alpine3.18** in order to keep images as much lightweight as possible.
 
 ### Highlights
 
-- Unified environment to build CLI or web applications with PHP.
-- Lightweight: main service Docker image only requires 83.0MB.
-- Supports SSL on local domains thanks to Caddy.
+- Unified environment to build CLI or web applications with PHP8.
+- Lightweight: main service Docker image only requires **83.0MB**.
+- **Self-signed local domains** thanks to Caddy.
 
 ## Requirements
 
 To use this repository it is required:
 
 - [Docker](https://www.docker.com/) - An open source containerization platform.
-- [Git](https://git-scm.com/) -  The free and open source distributed version control system.
+- [Git](https://git-scm.com/) - The free and open source distributed version control system.
 
 ## Built with
 
-This project has been built using the following tools:
-
-- [Docker](https://www.docker.com/) - An open source containerization platform.
-- [Bash](https://www.gnu.org/software/bash/) - The GNU Project's shell.
-- [Make](https://www.gnu.org/software/make/) - GNU make utility to maintain groups of programs.
-- [Caddy Server](https://caddyserver.com/) - Caddy 2 is a powerful, enterprise-ready, **open source web server** with **automatic HTTPS** written in Go.
-- [PHP-FPM](https://www.php.net/manual/en/install.fpm.php) - FastCGI Process Manager is a primary PHP implementation containing some features (mostly) useful for heavy-loaded sites.
-  - [Infection](https://infection.github.io/) - PHP Mutation Testing Framework.
-  - [PCOV](https://github.com/krakjoe/pcov) - A self contained CodeCoverage for PHP.
-  - [UOPZ](https://www.php.net/manual/en/book.uopz.php) - User Operations for Zend
-  - [PHP-Insights](https://phpinsights.com/) - The perfect starting point to analyze the code quality of your PHP projects.
-  - [PHP-Parallel-Lint](https://github.com/php-parallel-lint/PHP-Parallel-Lint) - PHP Parallel Syntax Analyzer.
-  - [PHPStan](https://phpstan.org/) - PHP Static Analyzer.
-  - [PHPUnit](https://phpunit.de/) - PHP Testing Framework.
-    - [Paratest](https://github.com/paratestphp/paratest) - Adds parallel testing support in PHPUnit.
-    - [BypassFinals Hook](https://github.com/dg/bypass-finals) - Removes final keywords from source code on-the-fly and allows mocking of final methods and classes.
+| Type              | Component                                                                   | Description                                               |
+| ----------------- | --------------------------------------------------------------------------- | --------------------------------------------------------- |
+| Infrastructure    | [Docker](https://www.docker.com/)                                           | Containerization platform                                 |
+| Service           | [Caddy Server](https://caddyserver.com/)                                    | Open source web server with automatic HTTPS written in Go |
+| Service           | [PHP-FPM](https://www.php.net/manual/en/install.fpm.php)                    | PHP with FastCGI Process Manager                          |
+| Miscelaneous      | [Bash](https://www.gnu.org/software/bash/)                                  | Allows to create an interactive shell within main service |
+| Miscelaneous      | [Make](https://www.gnu.org/software/make/)                                  | Allows to execute commands defined on a _Makefile_        |
+| Quality Assurance | [PCOV](https://github.com/krakjoe/pcov)                                     | Allows to generate a CodeCoverage report for PHP apps     |
+| Quality Assurance | [PHP-Insights](https://phpinsights.com/)                                    | Allows to analyze the code quality of your PHP projects   |
+| Quality Assurance | [PHP-Parallel-Lint](https://github.com/php-parallel-lint/PHP-Parallel-Lint) | Allows to check the syntax of PHP files in parallel       |
+| Quality Assurance | [PHPStan](https://phpstan.org/)                                             | Allows to perform static analysis of your application looking for issues |
+| Testing           | [Infection](https://infection.github.io/)                                   | PHP Mutation Testing Framework                            |
+| Testing           | [PHPUnit](https://phpunit.de/)                                              | PHP Testing Framework                                     |
+| Testing           | [Paratest](https://github.com/paratestphp/paratest)                         | Allows to run your PHPUnit test suite in parallel         |
+| Testing           | [UOPZ](https://www.php.net/manual/en/book.uopz.php)                         | Allows to mock internal date/time functions on your tests |
+| Testing           | [BypassFinals Hook](https://github.com/dg/bypass-finals)                    | Allows to mock PHP _final_ classes                        |
 
 ## Getting Started
 
@@ -55,22 +55,30 @@ $ git clone git@github.com:fonil/dockerized-php-dev-env.git .
 
 ### Conventions
 
-#### Website Domain
+#### Application
+
+Your application will be placed in **./src** folder.
+
+#### Default website domain
 
 The default website domain is **https://website.demo**
 
-> You can customize the domain(s) at `./etc/caddy/Caddyfile`
-> `Makefile` has a predefined constant with current domain name. Please review the _Makefile_ target files to adjust the commands to your requirements. 
+##### Customizing the default domain
+
+If you want to customize the default website domain, please:
+
+- Update `./etc/caddy/Caddyfile` accordingly
+- Update the _Makefile_ in where a constant is defined with current domain name.
 
 #### Directory structure
 
 ##### The Root Directory
 
-| Folder    | Description                                                  |
-| --------- | ------------------------------------------------------------ |
+| Folder    | Description                                                                |
+| --------- | -------------------------------------------------------------------------- |
 | ./etc     | The `etc` directory contains required files to properly setup the service. |
-| ./src     | The `src` directory contains the core code of your application. |
-| ./targets | The `targets` directory contains the Makefile partials organized by task. |
+| ./src     | The `src` directory contains the source code of your application.          |
+| ./targets | The `targets` directory contains the Makefile partials organized by task.  |
 | ./usr     | The `usr` directory contains required files to properly setup the service. |
 
 ##### The ./etc Directory
@@ -81,16 +89,17 @@ The default website domain is **https://website.demo**
 
 ##### The ./src Directory
 
-| Folder       | Description                                                  |
-| ------------ | ------------------------------------------------------------ |
-| ./src/app    | The majority of your application is housed in the `app` directory. <br />By default, this directory is namespaced under `App` and is autoloaded by Composer using the [PSR-4 autoloading standard](https://www.php-fig.org/psr/psr-4/). |
+| Folder       | Description                                                                                         |
+| ------------ | --------------------------------------------------------------------------------------------------- |
+| ./src/app    | The majority of your application is housed in the `app` directory. <br />By default, this directory is namespaced under `App` and is autoloaded by Composer using the [PSR-4 autoloading standard](https://www.php-fig.org/psr/psr-4/).                              |
 | ./src/output | The `output` directory contains PCOV reports, file caches and other files generated by the service. |
-| ./src/public | The `public` directory contains the `index.php` file which bootstraps the application. |
-| ./src/tests  | The `tests` directory contains your automated tests.         |
-| ./src/vendor | The `vendor` directory contains your [Composer](https://getcomposer.org/) dependencies. |
-| ./src/.env   | Environment file with customized variables.                  |
+| ./src/public | The `public` directory contains the `index.php` file which bootstraps the application.              |
+| ./src/tests  | The `tests` directory contains your automated tests.                                                |
+| ./src/vendor | The `vendor` directory contains your [Composer](https://getcomposer.org/) dependencies.             |
+| ./src/.env   | Environment file with customized variables.                                                         |
 
-> If you take a look to [docker-compose.yml#L13](https://github.com/fonil/dockerized-php-dev-env/blob/main/docker-compose.yml#L13) this folder is mounted as a volume into the application container. With this setup you are able to modify the source code with your preferred IDE on your host, and automatically have those changes in the container 😃
+> If you take a look to [docker-compose.yml#L13](https://github.com/fonil/dockerized-php-dev-env/blob/main/docker-compose.yml#L13) this folder is mounted as a volume into the application container.
+> With this setup you are able to modify the source code of your application, within your preferred IDE, on your host and automatically have those changes in the container 😃
 
 #### Logging
 
@@ -106,27 +115,26 @@ By default this file contains:
 APP_LOG_STREAM="php://stdout"
 ```
 
-And overrides the `$_ENV` global container by adding a new entry:
-
-```php
-$_ENV['APP_LOG_ENTRY'] = "php://stdout";
-```
+> In the `./src/public/index.php` file this `.env` is parsed and overloads the `$_ENV` global container with custom variables.
 
 ###### Testing
 
-To avoid see logs sent to `STDOUT` during the tests execution, the `$_ENV['APP_LOG_STREAM']` is overwritten by `/tmp/phpunit-log-stream`, a container local file reference.  
+To avoid see log entries sent to `STDOUT` during the tests execution, the `$_ENV['APP_LOG_STREAM']` is defined as `.phpunit-log-stream`, a local file reference.  
 
-> Please check **phpunit.xml** and customize the **APP_LOG_STREAM** variable to your requirements.  
+> Please check `./src/phpunit.xml` file, and customize the **APP_LOG_STREAM** variable to your requirements.
+> Changes done on here only take effect during test execution.  
 
-##### Mocking Time
+##### Mocking Date/Time functions
 
-To allow testing with date and/or time variations, a dependency has been added to `composer.json` called `slope-it/clock-mock` which provides a way for mocking the current timestamp used by PHP for \DateTime(Immutable) objects and date/time related functions. 
+To allow testing with date and/or time variations, [slope-it/clock-mock](https://github.com/slope-it/clock-mock) is added as dependency into `./src/composer.json`.
 
-> It requires the [uopz extension](https://github.com/krakjoe/uopz)
+This library provides a way for mocking the current timestamp used by PHP for \DateTime(Immutable) objects and date/time related functions. 
+
+> It requires the [uopz extension](https://github.com/krakjoe/uopz), that is why `Dockerfile` references to it.
 
 #### Default Application
 
-Default application just print outs `Class [ App\Providers\Foo ]` from `Foo` final class placed at `src/app/Providers`.
+Default application just print outs `Class [ App\Providers\Foo ]` from `Foo` final class placed at `./src/app/Providers`.
 
 Default unit test just verifies the class returns the correct namespace and checks the log message by reading the contents from `$_ENV['APP_LOG_STREAM']`.
 
@@ -176,7 +184,11 @@ A *Makefile* is provided with some predefined commands:
 ~/path/to/my-new-project$ make run
 ```
 
-> It is important to use `make build` command to create the Docker base image due the _Makefile_ command passes to Dockerfile file your host user information, required to create an internal user into the application container with the same name, group and ids. This way avoids file permission conflicts on internally created files that needs to be shared with the host. 
+##### Attention
+
+It is important to use `make build` command instead of `docker-compose build` to create the Docker base image. The reason why is because the _Makefile_ command passes to `Dockerfile` your host account details, required to create an internal user into the application container with the same name, group and ids. 
+
+This way avoids file permission conflicts on internally created files that needs to be shared with the host. 
 
 ##### About `make open` command
 
@@ -184,16 +196,16 @@ This command is a shortcut of multiple tasks needs to be done in order to expose
 
 Those tasks are:
 
-1. Add the website domain to `/etc/hosts` file.
+1. Verifies the website domain is added to `/etc/hosts` file.
 2. Ensure the PHP-FPM service has been started. 
-3. Ensure the Caddy service has been started.
-4. Ensure the application has PHP dependencies properly installed.
+3. Ensure the application has PHP dependencies properly installed.
+4. Ensure the Caddy service has been started.
 
 ###### Certificate Authority (CA) & SSL Certificate
 
 Caddy uses HTTPS **by default**. In order to avoid SSL certificates issues you must install the Caddy Authority Certificate on your browser. This is a one-time action due the certificate does not change after rebuilding/restarting the service.
 
-> A *Makefile* command called `make install-authority-certificate` is provided and copies the Caddy root certificate from the Caddy container service into current application path and displays the steps you need to follow to install this certificate with your browser. 
+> A *Makefile* command called `make install-authority-certificate` is provided and copies the Caddy root certificate from the Caddy container service into current application path, and displays the steps you need to follow to install this certificate in your browser. 
 
 #### Stop the service
 
