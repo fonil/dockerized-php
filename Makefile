@@ -138,11 +138,11 @@ down: ## Docker: stops the service
 	$(call runDockerCompose,down --remove-orphans)
 
 .PHONY: up
-up: ## Docker: starts the service
+up: ## Docker: starts the PHP-FPM service
 	$(call runDockerCompose,--file docker-compose.yml up --detach --remove-orphans)
 
-.PHONY: full
-full: ## Docker: starts the service + Caddy webserver
+.PHONY: up-caddy
+up-caddy: ## Docker: starts the PHP-FPM service + Caddy webserver
 	$(call runDockerCompose,--file docker-compose.yml --file docker-compose.caddy.yml up --detach --remove-orphans)
 
 .PHONY: logs
@@ -241,7 +241,7 @@ info: ## Application: displays the php.init details
 	$(call runDockerComposeExecAsUser,php -i)
 
 .PHONY: run
-run: up full composer-install update-hosts-file ## Application: opens the website domain with your preferred browser
+run: up-caddy composer-install update-hosts-file ## Application: starts the services & installs dependencies & check host file
 	$(call showInfo,"Website is ready. Now you can visit:",$(CYAN)$(WEBSITE_URL)$(RESET))
 	@echo ""
 	$(call showAlert,"If you experiment any issue related with SSL certificate please execute:",$(YELLOW)make install-caddy-certificate$(RESET))
