@@ -47,6 +47,7 @@ final class FooTest extends TestCase
      */
     public function testMock(): void
     {
+        /** @phpstan-ignore-next-line */
         $finalClassMock = $this->createMock(Foo::class);
 
         $this->assertArrayHasKey('PHPUnit\Framework\MockObject\MockObject', class_implements($finalClassMock));
