@@ -5,7 +5,7 @@
         beStrictAboutOutputDuringTests="true"
         beStrictAboutTodoAnnotatedTests="true"
         bootstrap="vendor/autoload.php"
-        cacheResultFile="/output/.cache/test-results"
+        cacheResultFile="../output/.cache/test-results"
         colors="true"
         convertDeprecationsToExceptions="false"
         executionOrder="random"
@@ -33,7 +33,7 @@
     </testsuites>
 
     <coverage
-            cacheDirectory="/output/.cache/coverage"
+            cacheDirectory="../output/.cache/coverage"
             disableCodeCoverageIgnore="true"
             ignoreDeprecatedCodeUnits="true"
             includeUncoveredFiles="true"
