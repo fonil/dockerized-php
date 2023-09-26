@@ -8,19 +8,9 @@ final class Foo
 {
     public function __invoke(): string
     {
-        $this->log(self::class, 'Executed method ' . __FUNCTION__);
+        $date = date('d-M-Y H:i:s');
+        $line = 'Executed method ' . __FUNCTION__ . PHP_EOL;
 
-        return self::class;
-    }
-
-    private function log(string $className, string $line): void
-    {
-        file_put_contents($_ENV['APP_LOG_STREAM'], sprintf(
-            '[%s] %s: %s%s',
-            date('d-M-Y H:i:s'),
-            $className,
-            $line,
-            PHP_EOL
-        ));
+        return sprintf('[%s] %s: %s', $date, self::class, $line);
     }
 }

@@ -29,27 +29,38 @@ final class FooTest extends TestCase
 
     /**
      * @covers \App\Providers\Foo::__invoke
-     * @covers \App\Providers\Foo::log
      *
      * @dataProvider dataProviderForInvoke
      */
-    public function testInvoke(string $expectedResult, string $expectedLog): void
+    public function testInvoke(string $expectedClass, string $expectedLog): void
     {
-        $result = (new Foo())();
+        $instance = new Foo();
 
-        $this->assertEquals($expectedResult, $result);
-        $this->assertStringContainsString($expectedLog, (string) file_get_contents($_ENV['APP_LOG_STREAM']));
+        $log = $instance->__invoke();
+
+        $this->assertEquals($expectedClass, $instance::class);
+        $this->assertEquals($expectedLog, $log);
+    }
+
+    /**
+     * @covers \App\Providers\Foo::__invoke
+     */
+    public function testMock(): void
+    {
+        $finalClassMock = $this->createMock(Foo::class);
+
+        $this->assertArrayHasKey('PHPUnit\Framework\MockObject\MockObject', class_implements($finalClassMock));
     }
 
     /**
      * @return array<int, DataProviderEntry>
      */
-    public function dataProviderForInvoke(): array
+    public static function dataProviderForInvoke(): array
     {
         return [
             [
                 Foo::class,
-                '[01-Jan-2023 00:00:00] App\Providers\Foo: Executed method __invoke',
+                '[01-Jan-2023 00:00:00] App\Providers\Foo: Executed method __invoke' . PHP_EOL,
             ],
         ];
     }
