@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     'preset' => 'default',
 
-    'ide' => null,
+    'ide' => 'phpstorm',
 
     'exclude' => [
         './vendor',
