@@ -6,13 +6,13 @@ volumes:
 
 services:
     caddy:
-        image: caddy:alpine
         container_name: caddy
+        image: caddy:alpine
         restart: unless-stopped
         volumes:
             - caddy_data:/data
             - caddy_config:/config
-            - ./etc/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+            - ./setup/etc/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
             - ./src:/code
         ports:
             - 80:80

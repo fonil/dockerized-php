@@ -2,16 +2,17 @@ version: '3.9'
 
 services:
     app:
-        build:
-            context: .
-            dockerfile: ./Dockerfile
         container_name: app
+        build:
+            context: ./setup
+            dockerfile: Dockerfile
         restart: unless-stopped
         tty: true
         working_dir: /code
         volumes:
             - ./src:/code
-            - ./usr/shared/healthchecks/php-fpm.sh:/usr/shared/healthchecks/php-fpm.sh:ro
+            - ./output:/output
+            - ./setup/usr/shared/healthchecks/php-fpm.sh:/usr/shared/healthchecks/php-fpm.sh:ro
         healthcheck:
             test: ["CMD", "/usr/shared/healthchecks/php-fpm.sh"]
             interval: 10s
