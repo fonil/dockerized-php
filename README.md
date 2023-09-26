@@ -1,4 +1,4 @@
-[![Integration Tests](https://github.com/fonil/dockerized-php-dev-env/actions/workflows/integration-tests.yml/badge.svg?branch=main)](https://github.com/fonil/dockerized-php-dev-env/actions/workflows/integration-tests.yml)
+[![Integration Tests](https://github.com/fonil/dockerized-php/actions/workflows/integration-tests.yml/badge.svg?branch=main)](https://github.com/fonil/dockerized-php/actions/workflows/integration-tests.yml)
 
 # Dockerized PHP
 
@@ -8,19 +8,20 @@
 
 ## Summary
 
-This repository allows to create a Docker services and/or microservices built with PHP.
+This repository allows to create containerized PHP applications and/or microservices using Docker and Caddy.
 
-The Docker image is based on **php:8.2.9-fpm-alpine3.18** in order to keep images as much lightweight as possible.
+The Docker image is based on **php:8.2.9-fpm-alpine3.18** in order to keep bade image as much lightweight as possible.
 
 ### Highlights
 
-- Unified environment to build CLI or web applications with PHP8.
+- Unified environment to build CLI and/or web applications with PHP8.
+- Code Coverage, PHPUnit, Paratest, PHPInsights, PHPStan and Linters by default.
 - Lightweight: main service Docker image only requires **89.1MB**.
 - **Self-signed local domains** thanks to Caddy.
 
 ## Requirements
 
-To use this repository it is required:
+To use this repository you need:
 
 - [Docker](https://www.docker.com/) - An open source containerization platform.
 - [Git](https://git-scm.com/) - The free and open source distributed version control system.
@@ -50,29 +51,27 @@ Just clone the repository into your preferred path:
 
 ```bash
 $ mkdir -p ~/path/to/my-new-project && cd ~/path/to/my-new-project
-$ git clone git@github.com:fonil/dockerized-php-dev-env.git .
+$ git clone git@github.com:fonil/dockerized-php.git .
 ```
 
 ### Conventions
 
 #### Application
 
-Your application will be placed in **./src** folder.
+Your application must be placed into `src` folder.
 
 #### Default website domain
 
-The default website domain is **https://website.demo**
+The default website domain is `https://website.demo`
 
 ##### Customizing the default domain
 
-If you want to customize the default website domain, please:
+If you want to customize the default website domain please:
 
-- Update `./setup/etc/caddy/Caddyfile` accordingly
+- Update `setup/etc/caddy/Caddyfile` accordingly
 - Update the _Makefile_ in where a constant is defined with current domain name.
 
 #### Directory structure
-
-##### The Root Directory
 
 | Folder                          | Description                                                                                       |
 |---------------------------------|---------------------------------------------------------------------------------------------------|
@@ -81,18 +80,14 @@ If you want to customize the default website domain, please:
 | `setup/usr/local/etc/php-fpm.d` | The `setup/usr/local/etc/php-fpm.d` directory contains required PHP-FPM config file (`www.conf`). |
 | `setup/shared/healthchecks`     | The `setup/shared/healthchecks` directory contains the PHP-FPM healthcheck file (`php-fpm.sh`).   |
 | `src`                           | The `src` directory contains the source code of your application.                                 |
-| `output`                        | The `output` directory contains any file internally generated from the container service(s).      |
+| `src/app`                       | The majority of your application is housed in the `app` directory. <br />By default, this directory is namespaced under `App` and is autoloaded by Composer using the [PSR-4 autoloading standard](https://www.php-fig.org/psr/psr-4/).                              |
+| `src/public`                    | The `public` directory contains the `index.php` file which bootstraps the application.            |
+| `src/tests`                     | The `tests` directory contains your automated tests.                                              |
+| `src/vendor`                    | The `vendor` directory contains your [Composer](https://getcomposer.org/) dependencies.           |
+| `output`                        | The `output` directory contains any file internally generated from the container service.         |
 
-##### The ./src Directory
+> If you take a look to [docker-compose.yml#L13](https://github.com/fonil/dockerized-php/blob/main/docker-compose.yml#L13) this folder is mounted as a volume into the application container.
 
-| Folder       | Description                                                                                         |
-| ------------ | --------------------------------------------------------------------------------------------------- |
-| ./src/app    | The majority of your application is housed in the `app` directory. <br />By default, this directory is namespaced under `App` and is autoloaded by Composer using the [PSR-4 autoloading standard](https://www.php-fig.org/psr/psr-4/).                              |
-| ./src/public | The `public` directory contains the `index.php` file which bootstraps the application.              |
-| ./src/tests  | The `tests` directory contains your automated tests.                                                |
-| ./src/vendor | The `vendor` directory contains your [Composer](https://getcomposer.org/) dependencies.             |
-
-> If you take a look to [docker-compose.yml#L13](https://github.com/fonil/dockerized-php-dev-env/blob/main/docker-compose.yml#L13) this folder is mounted as a volume into the application container.
 > With this setup you are able to modify the source code of your application, within your preferred IDE, on your host and automatically have those changes in the container 😃
 
 #### Logging
@@ -101,23 +96,23 @@ The application logs to `STDOUT` by default.
 
 ##### Mocking Date/Time functions
 
-To allow testing with date and/or time variations, [slope-it/clock-mock](https://github.com/slope-it/clock-mock) is added as dependency into `./src/composer.json`.
+To allow testing with date and/or time variations, [slope-it/clock-mock](https://github.com/slope-it/clock-mock) is added as dependency into `src/composer.json`.
 
-This library provides a way for mocking the current timestamp used by PHP for \DateTime(Immutable) objects and date/time related functions. 
+This library provides a way for mocking the current timestamp used by PHP for `\DateTime(Immutable)` objects and date/time related functions. 
 
 > It requires the [uopz extension](https://github.com/krakjoe/uopz), that is why `Dockerfile` references to it.
 
 #### Default Application
 
-Default application just print outs `Class [ App\Providers\Foo ]` from `Foo` final class placed at `./src/app/Providers`.
+Default application just print outs `Class [ App\Providers\Foo ]` from `Foo` final class placed at `src/app/Providers`.
 
-Default unit test just verifies the class returns the correct namespace and checks the log message.
+Default unit test just verifies the instance returns.
 
 > This default application has being created as a skeleton and it should be replaced by your business logic.
 
 ### Available commands
 
-A *Makefile* is provided with some predefined commands:
+A _Makefile_ is provided with some predefined commands:
 
 ```bash
 ~/path/to/my-new-project$ make
@@ -133,7 +128,7 @@ A *Makefile* is provided with some predefined commands:
 · build                          Docker: builds the service
 · down                           Docker: stops the service
 · up                             Docker: starts the service
-· full                           Docker: starts the service + Caddy webserver
+· up-caddy                       Docker: starts the service + Caddy webserver
 · logs                           Docker: exposes the service logs
 · restart                        Docker: restarts the service
 · bash                           Docker: stablish a bash session into main container
@@ -154,7 +149,7 @@ A *Makefile* is provided with some predefined commands:
 · tests                          Application: runs ParaTest + Infection
 · version                        Application: displays the PHP Version
 · info                           Application: displays the php.init details
-· run                            Application: opens the website domain with your preferred browser
+· run                            Application: Application: starts the services & installs dependencies & check host file
 · install-caddy-certificate      Caddy: installs Caddy Local Authority certificate
 ```
 
@@ -164,23 +159,23 @@ A *Makefile* is provided with some predefined commands:
 ~/path/to/my-new-project$ make build
 ```
 
-#### Start the service
-
-```bash
-~/path/to/my-new-project$ make run
-```
-
 ##### Attention
 
 It is important to use `make build` command instead of `docker-compose build` to create the Docker base image. The reason why is because the _Makefile_ command passes to `Dockerfile` your host account details, required to create an internal user into the application container with the same name, group and ids. 
 
 > This way avoids file permission conflicts on internally created files that needs to be shared with the host. 
 
-###### Certificate Authority (CA) & SSL Certificate
+#### Run the service
+
+```bash
+~/path/to/my-new-project$ make run
+```
+
+##### Certificate Authority (CA) & SSL Certificate
 
 Caddy uses HTTPS **by default**. In order to avoid SSL certificates issues you must install the Caddy Authority Certificate on your browser. This is a one-time action due the certificate does not change after rebuilding/restarting the service.
 
-> A *Makefile* command called `make install-caddy-certificate` is provided and copies the Caddy root certificate from the Caddy container service into current application path, and displays the steps you need to follow to install this certificate in your browser. 
+> A _Makefile_ command called `make install-caddy-certificate` is provided and copies the Caddy root certificate from the Caddy container service into current application path, and displays the steps you need to follow to install this certificate in your browser. 
 
 #### Stop the service
 
@@ -225,11 +220,11 @@ Caddy uses HTTPS **by default**. In order to avoid SSL certificates issues you m
 
 ##### Reports
 
-PHPUnit/Paratest/Infection are configured to store the PHP Code Coverage report into `./output/coverage`
+PHPUnit/Paratest/Infection are configured to store the PHP Code Coverage report into `output/coverage`
 
 ##### Logs
 
-Infection is configured to store the logs into `./output/logs/infection`
+Infection is configured to store the logs into `output/logs/infection`
 
 ## Security Vulnerabilities
 
@@ -243,7 +238,7 @@ Only the latest major version receives security fixes.
 
 ### Reporting a Vulnerability
 
-If you discover a security vulnerability within this project, please [open an issue here](https://github.com/fonil/dockerized-php-dev-env/issues). All security vulnerabilities will be promptly addressed.
+If you discover a security vulnerability within this project, please [open an issue here](https://github.com/fonil/dockerized-php/issues). All security vulnerabilities will be promptly addressed.
 
 ## License
 
