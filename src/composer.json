@@ -1,4 +1,9 @@
 {
+    "name": "fonil/dockerized-php",
+    "type": "project",
+    "license": "MIT",
+    "description": "A Docker environment to build PHP applications supporting self-signed local domain powered by Caddy",
+    "keywords": ["skeleton", "caddy", "php", "cli", "composer", "phpunit", "paratest", "infection", "phpinsights", "phpstan", "phpunit", "pcov", "bypass-finals"],
     "authors": [
         {
             "name": "Alcides Ramos",
@@ -6,6 +11,10 @@
             "homepage": "https://alcidesrc.com/"
         }
     ],
+    "support": {
+        "issues": "https://github.com/fonil/dockerized-php/issues",
+        "source": "https://github.com/fonil/dockerized-php"
+    },
     "require": {
         "php": "^8.2"
     },
