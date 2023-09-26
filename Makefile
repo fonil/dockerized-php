@@ -256,7 +256,7 @@ run: up-caddy composer-install update-hosts-file ## Application: starts the serv
 install-caddy-certificate: ## Caddy: installs Caddy Local Authority certificate
 	@echo "Installing [ $(YELLOW)Caddy Local Authority - 20XX ECC Root$(RESET) ] as a valid Certificate Authority"
 	$(call orderedList,1,"Copy the root certificate from Caddy Docker container")
-	@docker compose cp $(SERVICE_NAME_CADDY):/data/caddy/pki/authorities/local/root.crt ./caddy-root-ca-authority.crt
+	@docker-compose cp $(SERVICE_NAME_CADDY):/data/caddy/pki/authorities/local/root.crt ./caddy-root-ca-authority.crt
 	$(call orderedList,2,"Install the Caddy Authority certificate into your browser")
 	@echo "$(YELLOW)Chrome-based browsers (Chrome, Brave, etc)$(RESET)"
 	@echo "- Go to [ Settings / Privacy & Security / Security / Manage Certificates / Authorities ]"
