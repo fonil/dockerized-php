@@ -8,16 +8,16 @@
 
 ## Summary
 
-This repository allows to create containerized PHP applications and/or microservices using Docker and Caddy.
+This repository allows you to create containerized PHP applications and/or microservices using Docker and Caddy.
 
 The Docker image is based on **php:8.2.9-fpm-alpine3.18** in order to keep bade image as much lightweight as possible.
 
 ### Highlights
 
-- Unified environment to build CLI and/or web applications with PHP8.
-- Code Coverage, PHPUnit, Paratest, PHPInsights, PHPStan and Linters by default.
 - Lightweight: main service Docker image only requires **89.1MB**.
 - **Self-signed local domains** thanks to Caddy.
+- Unified environment to build CLI and/or web applications with PHP8.
+- Code Coverage, PHPUnit, Paratest, PHPInsights, PHPStan and Linters by default.
 
 ## Requirements
 
@@ -28,22 +28,22 @@ To use this repository you need:
 
 ## Built with
 
-| Type              | Component                                                                   | Description                                               |
-| ----------------- | --------------------------------------------------------------------------- | --------------------------------------------------------- |
-| Infrastructure    | [Docker](https://www.docker.com/)                                           | Containerization platform                                 |
-| Service           | [Caddy Server](https://caddyserver.com/)                                    | Open source web server with automatic HTTPS written in Go |
-| Service           | [PHP-FPM](https://www.php.net/manual/en/install.fpm.php)                    | PHP with FastCGI Process Manager                          |
-| Miscelaneous      | [Bash](https://www.gnu.org/software/bash/)                                  | Allows to create an interactive shell within main service |
-| Miscelaneous      | [Make](https://www.gnu.org/software/make/)                                  | Allows to execute commands defined on a _Makefile_        |
-| Quality Assurance | [PCOV](https://github.com/krakjoe/pcov)                                     | Allows to generate a CodeCoverage report for PHP apps     |
-| Quality Assurance | [PHP-Insights](https://phpinsights.com/)                                    | Allows to analyze the code quality of your PHP projects   |
-| Quality Assurance | [PHP-Parallel-Lint](https://github.com/php-parallel-lint/PHP-Parallel-Lint) | Allows to check the syntax of PHP files in parallel       |
+| Type              | Component                                                                   | Description                                                              |
+| ----------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Infrastructure    | [Docker](https://www.docker.com/)                                           | Containerization platform                                                |
+| Service           | [Caddy Server](https://caddyserver.com/)                                    | Open source web server with automatic HTTPS written in Go                |
+| Service           | [PHP-FPM](https://www.php.net/manual/en/install.fpm.php)                    | PHP with FastCGI Process Manager                                         |
+| Miscelaneous      | [Bash](https://www.gnu.org/software/bash/)                                  | Allows to create an interactive shell within main service                |
+| Miscelaneous      | [Make](https://www.gnu.org/software/make/)                                  | Allows to execute commands defined on a _Makefile_                       |
+| Quality Assurance | [PCOV](https://github.com/krakjoe/pcov)                                     | Allows to generate a CodeCoverage report for PHP apps                    |
+| Quality Assurance | [PHP-Insights](https://phpinsights.com/)                                    | Allows to analyze the code quality of your PHP projects                  |
+| Quality Assurance | [PHP-Parallel-Lint](https://github.com/php-parallel-lint/PHP-Parallel-Lint) | Allows to check the syntax of PHP files in parallel                      |
 | Quality Assurance | [PHPStan](https://phpstan.org/)                                             | Allows to perform static analysis of your application looking for issues |
-| Testing           | [Infection](https://infection.github.io/)                                   | PHP Mutation Testing Framework                            |
-| Testing           | [PHPUnit](https://phpunit.de/)                                              | PHP Testing Framework                                     |
-| Testing           | [Paratest](https://github.com/paratestphp/paratest)                         | Allows to run your PHPUnit test suite in parallel         |
-| Testing           | [UOPZ](https://www.php.net/manual/en/book.uopz.php)                         | Allows to mock internal date/time functions on your tests |
-| Testing           | [BypassFinals Hook](https://github.com/dg/bypass-finals)                    | Allows to mock PHP _final_ classes                        |
+| Testing           | [Infection](https://infection.github.io/)                                   | PHP Mutation Testing Framework                                           |
+| Testing           | [PHPUnit](https://phpunit.de/)                                              | PHP Testing Framework                                                    |
+| Testing           | [Paratest](https://github.com/paratestphp/paratest)                         | Allows to run your PHPUnit test suite in parallel                        |
+| Testing           | [UOPZ](https://www.php.net/manual/en/book.uopz.php)                         | Allows to mock internal date/time functions on your tests                |
+| Testing           | [BypassFinals Hook](https://github.com/dg/bypass-finals)                    | Allows to mock PHP _final_ classes                                       |
 
 ## Getting Started
 
@@ -74,17 +74,19 @@ If you want to customize the default website domain please:
 #### Directory structure
 
 | Folder                          | Description                                                                                       |
-|---------------------------------|---------------------------------------------------------------------------------------------------|
+| ------------------------------- | ------------------------------------------------------------------------------------------------- |
 | `setup`                         | The `setup` directory contains config files required by PHP-FPM, Caddy...                         |
 | `setup/etc/caddy`               | The `setup/etc/caddy` directory contains required Caddy's config file (`Caddyfile`).              |
 | `setup/usr/local/etc/php-fpm.d` | The `setup/usr/local/etc/php-fpm.d` directory contains required PHP-FPM config file (`www.conf`). |
 | `setup/shared/healthchecks`     | The `setup/shared/healthchecks` directory contains the PHP-FPM healthcheck file (`php-fpm.sh`).   |
 | `src`                           | The `src` directory contains the source code of your application.                                 |
-| `src/app`                       | The majority of your application is housed in the `app` directory. <br />By default, this directory is namespaced under `App` and is autoloaded by Composer using the [PSR-4 autoloading standard](https://www.php-fig.org/psr/psr-4/).                              |
+| `src/app`                       | The `app` directory contains your business logic.[^1]                                             |
 | `src/public`                    | The `public` directory contains the `index.php` file which bootstraps the application.            |
 | `src/tests`                     | The `tests` directory contains your automated tests.                                              |
 | `src/vendor`                    | The `vendor` directory contains your [Composer](https://getcomposer.org/) dependencies.           |
 | `output`                        | The `output` directory contains any file internally generated from the container service.         |
+
+[^1]: Any class of file located under `app` directory will be loaded with `App` namespace by Composer using the [PSR-4 autoloading standard](https://www.php-fig.org/psr/psr-4/)
 
 > If you take a look to [docker-compose.yml#L13](https://github.com/fonil/dockerized-php/blob/main/docker-compose.yml#L13) this folder is mounted as a volume into the application container.
 
