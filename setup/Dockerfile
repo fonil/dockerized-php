@@ -6,7 +6,7 @@ FROM --platform=linux/amd64 php:8.2.9-fpm-alpine3.18
 #------------------------------------------------------------------------------
 
 LABEL Maintainer="Alcides Ramos <info@alcidesramos.com>"
-LABEL Description="Photo book maker tool based on PHP8 and ImageMagick"
+LABEL Description="Lightweight Docker development environment for PHP applications"
 
 # Arguments
 
