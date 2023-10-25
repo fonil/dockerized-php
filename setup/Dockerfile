@@ -17,8 +17,6 @@ ARG CURRENT_GID=$UID
 
 # Default PHP user/group
 
-ARG DEFAULT_UID=82
-ARG DEFAULT_GID=82
 ARG DEFAULT_UNAME=www-data
 ARG DEFAULT_GNAME=www-data
 
@@ -36,21 +34,16 @@ RUN apk update && apk add --no-cache \
         zip
 
 #------------------------------------------------------------------------------
-# REPLICATE HOST USER & ASSIGN IT TO DEFAULT GROUP
-#
-# This way solves issues related with file permissions on internally created
-# files
+# CREATE NON-ROOT USER
 #------------------------------------------------------------------------------
 
-RUN addgroup --gid $CURRENT_GID $CURRENT_GNAME && \
-    adduser --shell /bin/bash --disabled-password --no-create-home --uid $CURRENT_UID --ingroup $DEFAULT_GNAME --ingroup $CURRENT_GNAME $CURRENT_UNAME
+RUN addgroup --gid ${CURRENT_GID} ${CURRENT_GNAME}  \
+    && adduser --shell /bin/bash --uid ${CURRENT_UID} --ingroup ${CURRENT_GNAME} --ingroup ${DEFAULT_GNAME} --disabled-password --gecos '' ${CURRENT_UNAME}
 
-#USER $CURRENT_UNAME
+#USER ${CURRENT_UNAME}
 
 #------------------------------------------------------------------------------
-# COPY PHP-FPM CONFIG FILE
-#
-# By default PHP-FPM is running using replicated user & www-data group
+# SETUP PHP-FPM
 #------------------------------------------------------------------------------
 
 COPY ./usr/local/etc/php-fpm.d/www.conf /usr/local/etc/php-fpm.d/www.conf

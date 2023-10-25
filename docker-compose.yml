@@ -6,6 +6,11 @@ services:
         build:
             context: ./setup
             dockerfile: Dockerfile
+            args:
+                CURRENT_UNAME: non-root-user
+                CURRENT_GNAME: non-root-user
+                CURRENT_UID: 1000
+                CURRENT_GID: 1000
         restart: unless-stopped
         tty: true
         working_dir: /code

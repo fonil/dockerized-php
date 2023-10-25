@@ -26,11 +26,6 @@ else
 	RESET   := ""
 endif
 
-CURRENT_UID   := $(shell id --user)
-CURRENT_GID   := $(shell id --group)
-CURRENT_UNAME := $(shell id --user --name)
-CURRENT_GNAME := $(shell id --group --name)
-
 WEBSITE_DOMAIN     = website.demo
 WEBSITE_URL        = https://$(WEBSITE_DOMAIN)
 
@@ -131,7 +126,7 @@ update-hosts-file: ## Setup: adds the website domain to /etc/hosts file
 
 .PHONY: build
 build: ## Docker: builds the service
-	$(call runDockerCompose,build,--build-arg CURRENT_UNAME=$(CURRENT_UNAME) --build-arg CURRENT_GNAME=$(CURRENT_GNAME) --build-arg CURRENT_UID=$(CURRENT_UID) --build-arg CURRENT_GID=$(CURRENT_GID))
+	$(call runDockerCompose,build)
 
 .PHONY: down
 down: ## Docker: stops the service
