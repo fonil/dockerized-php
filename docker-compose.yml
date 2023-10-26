@@ -7,8 +7,8 @@ services:
             context: ./setup
             dockerfile: Dockerfile
             args:
-                CURRENT_UNAME: non-root-user
-                CURRENT_GNAME: non-root-user
+                CURRENT_UNAME: host-user
+                CURRENT_GNAME: host-user-group
                 CURRENT_UID: 1000
                 CURRENT_GID: 1000
         restart: unless-stopped

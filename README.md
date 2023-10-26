@@ -60,21 +60,18 @@ $ git clone git@github.com:fonil/dockerized-php.git .
 
 To avoid conflicts with ownership and/or file permission from those files internally created by the container service, a non-root user is created into the service with the same ID and group name than the current host user, and forcing the service to be executed with this user and group when creating files.
 
-Those details are in the `docker-compose.yml` file and contains the following arguments:
+Those details are in the `docker-compose.yml` file and contains the following arguments. 
 
-```yaml
-CURRENT_UNAME: non-root-user
-CURRENT_GNAME: non-root-user
-CURRENT_UID: 1000
-CURRENT_GID: 1000
-```
+| Argument        | How to fill the value | Description                |
+| --------------- | --------------------- | -------------------------- |
+| `CURRENT_UNAME` | `$ id --user --name`  | Current host user name     |
+| `CURRENT_GNAME` | `$ id --group --name` | Current host group name    |
+| `CURRENT_UID`   | `$ id --user`         | Current host user ID       |
+| `CURRENT_GID`   | `$ id --group`        | Current host user group ID |
 
-- `CURRENT_UNAME` is the **user name** that should be created inside the container service
--  `CURRENT_GNAME` is the **group name** that should be assigned to `CURRENT_UNAME` user inside the container service
-- `CURRENT_UID` is the **host-user ID** obtained by executing `id -u` in the host terminal (in this case, 1000)
-- `CURRENT_GID` is the **host-user group ID** obtained by executing `id -g` in the host terminal (in this case, 1000)
+Defining those values here allows you to execute `docker compose` and/or the *Makefile* commands (`make build`, `make up`...) with 100% compatibility.
 
-> Defining those values here allows you to execute `docker compose` and/or the *Makefile* commands (`make build`, `make up`...) with 100% compatibility
+> I recommend you to use your current user name/group to avoid conflicts when executing commands that creates files inside the container (for example `make composer install`, etc.)  
 
 #### Application
 

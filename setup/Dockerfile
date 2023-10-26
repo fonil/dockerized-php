@@ -11,7 +11,7 @@ LABEL Description="Lightweight Docker development environment for PHP applicatio
 # Arguments
 
 ARG CURRENT_UNAME=host-user
-ARG CURRENT_GNAME=host-group
+ARG CURRENT_GNAME=host-user-group
 ARG CURRENT_UID=1000
 ARG CURRENT_GID=$UID
 
