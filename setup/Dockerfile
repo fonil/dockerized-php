@@ -40,8 +40,6 @@ RUN apk update && apk add --no-cache \
 RUN addgroup --gid ${CURRENT_GID} ${CURRENT_GNAME}  \
     && adduser --shell /bin/bash --uid ${CURRENT_UID} --ingroup ${CURRENT_GNAME} --ingroup ${DEFAULT_GNAME} --disabled-password --gecos '' ${CURRENT_UNAME}
 
-#USER ${CURRENT_UNAME}
-
 #------------------------------------------------------------------------------
 # SETUP PHP-FPM
 #------------------------------------------------------------------------------
