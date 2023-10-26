@@ -56,6 +56,26 @@ $ git clone git@github.com:fonil/dockerized-php.git .
 
 ### Conventions
 
+#### Build Arguments
+
+To avoid conflicts with ownership and/or file permission from those files internally created by the container service, a non-root user is created into the service with the same ID and group name than the current host user, and forcing the service to be executed with this user and group when creating files.
+
+Those details are in the `docker-compose.yml` file and contains the following arguments:
+
+```yaml
+CURRENT_UNAME: non-root-user
+CURRENT_GNAME: non-root-user
+CURRENT_UID: 1000
+CURRENT_GID: 1000
+```
+
+- `CURRENT_UNAME` is the **user name** that should be created inside the container service
+-  `CURRENT_GNAME` is the **group name** that should be assigned to `CURRENT_UNAME` user inside the container service
+- `CURRENT_UID` is the **host-user ID** obtained by executing `id -u` in the host terminal (in this case, 1000)
+- `CURRENT_GID` is the **host-user group ID** obtained by executing `id -g` in the host terminal (in this case, 1000)
+
+> Defining those values here allows you to execute `docker compose` and/or the *Makefile* commands (`make build`, `make up`...) with 100% compatibility
+
 #### Application
 
 Your application must be placed into `src` folder.
@@ -160,12 +180,6 @@ A _Makefile_ is provided with some predefined commands:
 ```bash
 ~/path/to/my-new-project$ make build
 ```
-
-##### Attention
-
-It is important to use `make build` command instead of `docker-compose build` to create the Docker base image. The reason why is because the _Makefile_ command passes to `Dockerfile` your host account details, required to create an internal user into the application container with the same name, group and ids. 
-
-> This way avoids file permission conflicts on internally created files that needs to be shared with the host. 
 
 #### Run the service
 
