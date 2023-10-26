@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM --platform=linux/amd64 php:8.2.9-fpm-alpine3.18
+FROM --platform=linux/amd64 php:8.2.9-fpm-alpine3.18 AS build
 
 #------------------------------------------------------------------------------
 # DOCKER IMAGE CONTEXT
