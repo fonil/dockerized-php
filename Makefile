@@ -26,6 +26,11 @@ else
 	RESET   := ""
 endif
 
+CURRENT_UID   := $(shell id --user)
+CURRENT_GID   := $(shell id --group)
+CURRENT_UNAME := $(shell id --user --name)
+CURRENT_GNAME := $(shell id --group --name)
+
 WEBSITE_DOMAIN     = website.demo
 WEBSITE_URL        = https://$(WEBSITE_DOMAIN)
 
