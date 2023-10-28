@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM --platform=linux/amd64 php:8.2.9-fpm-alpine3.18 AS build
+FROM --platform=linux/amd64 php:8.2.12-fpm-alpine3.18 AS build
 
 #------------------------------------------------------------------------------
 # DOCKER IMAGE CONTEXT
@@ -24,11 +24,12 @@ ARG DEFAULT_GNAME=www-data
 # INSTALL DEPENDENCIES
 #------------------------------------------------------------------------------
 
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 RUN apk update && apk add --no-cache \
         bash \
         fcgi \
     && curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o - | sh -s \
-        @composer \
         pcov \
         uopz \
         zip
