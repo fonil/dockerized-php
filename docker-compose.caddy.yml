@@ -12,7 +12,7 @@ services:
         volumes:
             - caddy_data:/data
             - caddy_config:/config
-            - ./setup/etc/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+            - ./build/etc/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
             - ./src:/code
         ports:
             - 80:80

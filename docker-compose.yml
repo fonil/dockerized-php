@@ -17,7 +17,7 @@ services:
         volumes:
             - ./src:/code
             - ./output:/output
-            - ./setup/usr/shared/healthchecks/php-fpm.sh:/usr/shared/healthchecks/php-fpm.sh:ro
+            - ./build/usr/shared/healthchecks/php-fpm.sh:/usr/shared/healthchecks/php-fpm.sh:ro
         healthcheck:
             test: ["CMD", "/usr/shared/healthchecks/php-fpm.sh"]
             interval: 10s

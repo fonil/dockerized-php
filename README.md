@@ -85,17 +85,17 @@ The default website domain is `https://website.demo`
 
 If you want to customize the default website domain please:
 
-- Update `setup/etc/caddy/Caddyfile` accordingly
+- Update `build/etc/caddy/Caddyfile` accordingly
 - Update the _Makefile_ in where a constant is defined with current domain name.
 
 #### Directory structure
 
 | Folder                          | Description                                                                                       |
-| ------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `setup`                         | The `setup` directory contains config files required by PHP-FPM, Caddy...                         |
-| `setup/etc/caddy`               | The `setup/etc/caddy` directory contains required Caddy's config file (`Caddyfile`).              |
-| `setup/usr/local/etc/php-fpm.d` | The `setup/usr/local/etc/php-fpm.d` directory contains required PHP-FPM config file (`www.conf`). |
-| `setup/shared/healthchecks`     | The `setup/shared/healthchecks` directory contains the PHP-FPM healthcheck file (`php-fpm.sh`).   |
+|---------------------------------| ------------------------------------------------------------------------------------------------- |
+| `build`                         | The `build` directory contains config files required by PHP-FPM, Caddy...                         |
+| `build/etc/caddy`               | The `build/etc/caddy` directory contains required Caddy's config file (`Caddyfile`).              |
+| `build/usr/local/etc/php-fpm.d` | The `build/usr/local/etc/php-fpm.d` directory contains required PHP-FPM config file (`www.conf`). |
+| `build/shared/healthchecks`     | The `build/shared/healthchecks` directory contains the PHP-FPM healthcheck file (`php-fpm.sh`).   |
 | `src`                           | The `src` directory contains the source code of your application.                                 |
 | `src/app`                       | The `app` directory contains your business logic.[^1]                                             |
 | `src/public`                    | The `public` directory contains the `index.php` file which bootstraps the application.            |

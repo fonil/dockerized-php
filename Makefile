@@ -113,8 +113,8 @@ help:
 show-context: ## Setup: show context
 	$(call showInfo,"Showing context")
 	@echo ""
-	@echo " · User : (${UID}) ${UNAME}"
-	@echo " · Group: (${GID}) ${GNAME}"
+	@echo " · User : (${CURRENT_UID}) ${CURRENT_UNAME}"
+	@echo " · Group: (${CURRENT_GID}) ${CURRENT_GNAME}"
 	@echo ""
 	@echo " · Website: ${WEBSITE_URL}"
 	$(call taskDone)
