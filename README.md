@@ -10,11 +10,11 @@
 
 This repository allows you to create containerized PHP applications and/or microservices using Docker and Caddy.
 
-The Docker image is based on **php:8.2.12-fpm-alpine3.18** in order to keep bade image as much lightweight as possible.
+The Docker image is based on **php:8.3.0-fpm-alpine3.18** in order to keep bade image as much lightweight as possible.
 
 ### Highlights
 
-- Lightweight: main service Docker image only requires **89.8MB**.
+- Lightweight: main service Docker image only requires **94.5MB**.
 - **Self-signed local domains** thanks to Caddy.
 - Unified environment to build CLI and/or web applications with PHP8.
 - Code Coverage, PHPUnit, Paratest, PHPInsights, PHPStan and Linters by default.

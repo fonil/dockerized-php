@@ -4,11 +4,11 @@ services:
     app:
         container_name: app
         build:
-            context: ./setup
+            context: ./build
             dockerfile: Dockerfile
             args:
-                CURRENT_UNAME: host-user
-                CURRENT_GNAME: host-user-group
+                CURRENT_UNAME: alcides
+                CURRENT_GNAME: alcides
                 CURRENT_UID: 1000
                 CURRENT_GID: 1000
         restart: unless-stopped
