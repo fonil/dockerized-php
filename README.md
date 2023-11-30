@@ -105,9 +105,7 @@ If you want to customize the default website domain please:
 
 [^1]: Any class of file located under `app` directory will be loaded with `App` namespace by Composer using the [PSR-4 autoloading standard](https://www.php-fig.org/psr/psr-4/)
 
-> If you take a look to [docker-compose.yml#L13](https://github.com/fonil/dockerized-php/blob/main/docker-compose.yml#L13) this folder is mounted as a volume into the application container.
-
-> With this setup you are able to modify the source code of your application, within your preferred IDE, on your host and automatically have those changes in the container 😃
+> If you take a look to [docker-compose.yml#L18](https://github.com/fonil/dockerized-php/blob/main/docker-compose.yml#L18), source code is mounted as a volume into the application container. This setup allows you to modify the source code of your application on your host within your preferred IDE and automatically have those changes synchronized in the container 😃
 
 #### Logging
 
