@@ -34,6 +34,7 @@ To use this repository you need:
 | Infrastructure    | [Docker](https://www.docker.com/)                                           | Containerization platform                                                |
 | Service           | [Caddy Server](https://caddyserver.com/)                                    | Open source web server with automatic HTTPS written in Go                |
 | Service           | [PHP-FPM](https://www.php.net/manual/en/install.fpm.php)                    | PHP with FastCGI Process Manager                                         |
+| Service           | [Buggregator](https://buggregator.dev)                                      | Debug server providing support to VarDump, Monolog, Sentry...            |
 | Miscelaneous      | [Bash](https://www.gnu.org/software/bash/)                                  | Allows to create an interactive shell within main service                |
 | Miscelaneous      | [Make](https://www.gnu.org/software/make/)                                  | Allows to execute commands defined on a _Makefile_                       |
 | Quality Assurance | [PCOV](https://github.com/krakjoe/pcov)                                     | Allows to generate a CodeCoverage report for PHP apps                    |
