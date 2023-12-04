@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+    buggregator:
+        container_name: buggregator
+        image: ghcr.io/buggregator/server:latest
+        ports:
+            - 8000:8000
+            - 1025:1025
+            - 9912:9912
+            - 9913:9913
+        depends_on:
+            - app

@@ -6,6 +6,7 @@ services:
         build:
             context: ./build
             dockerfile: Dockerfile
+            target: development
             args:
                 CURRENT_UNAME: alcides
                 CURRENT_GNAME: alcides

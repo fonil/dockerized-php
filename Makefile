@@ -33,6 +33,7 @@ CURRENT_GNAME := $(shell id --group --name)
 
 WEBSITE_DOMAIN     = website.demo
 WEBSITE_URL        = https://$(WEBSITE_DOMAIN)
+BUGGREGATOR_URL    = http://localhost:8000/
 
 SERVICE_NAME_APP   = app
 SERVICE_NAME_CADDY = caddy
@@ -138,12 +139,8 @@ down: ## Docker: stops the service
 	$(call runDockerCompose,down --remove-orphans)
 
 .PHONY: up
-up: ## Docker: starts the PHP-FPM service
-	$(call runDockerCompose,--file docker-compose.yml up --detach --remove-orphans)
-
-.PHONY: up-caddy
-up-caddy: ## Docker: starts the PHP-FPM service + Caddy webserver
-	$(call runDockerCompose,--file docker-compose.yml --file docker-compose.caddy.yml up --detach --remove-orphans)
+up: ## Docker: starts the PHP-FPM service + Caddy webserver + Buggregator
+	$(call runDockerCompose,--file docker-compose.yml --file docker-compose.caddy.yml --file docker-compose.buggregator.yml up --detach --remove-orphans)
 
 .PHONY: logs
 logs: ## Docker: exposes the service logs
@@ -154,7 +151,7 @@ restart: ## Docker: restarts the service
 	$(call runDockerCompose,restart $(SERVICE_NAME_APP))
 
 .PHONY: bash
-bash: ## Docker: stablish a bash session into main container
+bash: ## Docker: establish a bash session into main container
 	$(call runDockerComposeExecAsUser,bash)
 
 ###
@@ -241,8 +238,12 @@ info: ## Application: displays the php.init details
 	$(call runDockerComposeExecAsUser,php -i)
 
 .PHONY: run
-run: up-caddy composer-install update-hosts-file ## Application: starts the services & installs dependencies & check host file
-	$(call showInfo,"Website is ready. Now you can visit:",$(CYAN)$(WEBSITE_URL)$(RESET))
+run: up composer-install update-hosts-file ## Application: starts the services & installs dependencies & check host file
+	$(call showInfo,"Website is ready!")
+	$(call showInfo,"You can visit the website from here:",$(CYAN)$(WEBSITE_URL)$(RESET))
+	$(call showInfo,"You can visit the debug server from here:",$(CYAN)$(BUGGREGATOR_URL)$(RESET))
+	@echo ""
+	$(call showInfo,"You can enable XHProf at any time just by adding the following query string:",$(CYAN)$(WEBSITE_URL)?profiler$(RESET))
 	@echo ""
 	$(call showAlert,"If you experiment any issue related with SSL certificate please execute:",$(YELLOW)make install-caddy-certificate$(RESET))
 	@echo ""

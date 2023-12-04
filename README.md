@@ -18,6 +18,7 @@ The Docker image is based on **php:8.3.0-fpm-alpine3.18** in order to keep bade 
 - **Self-signed local domains** thanks to Caddy.
 - Unified environment to build CLI and/or web applications with PHP8.
 - Code Coverage, PHPUnit, Paratest, PHPInsights, PHPStan and Linters by default.
+- Includes [Buggregator](https://buggregator.dev) as main debug server.
 
 ## Requirements
 
@@ -144,8 +145,7 @@ A _Makefile_ is provided with some predefined commands:
 · update-hosts-file              Setup: adds the website domain to /etc/hosts file
 · build                          Docker: builds the service
 · down                           Docker: stops the service
-· up                             Docker: starts the service
-· up-caddy                       Docker: starts the service + Caddy webserver
+· up                             Docker: starts the service + Caddy webserver + Buggregator
 · logs                           Docker: exposes the service logs
 · restart                        Docker: restarts the service
 · bash                           Docker: stablish a bash session into main container
