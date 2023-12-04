@@ -35,8 +35,9 @@ WEBSITE_DOMAIN     = website.demo
 WEBSITE_URL        = https://$(WEBSITE_DOMAIN)
 BUGGREGATOR_URL    = http://localhost:8000/
 
-SERVICE_NAME_APP   = app
-SERVICE_NAME_CADDY = caddy
+SERVICE_NAME_APP         = app
+SERVICE_NAME_CADDY       = caddy
+SERVICE_NAME_BUGGREGATOR = buggregator
 
 DOCKER_COMPOSE              = @docker-compose
 DOCKER_COMPOSE_EXEC         = $(DOCKER_COMPOSE) exec $(SERVICE_NAME_APP)
@@ -143,8 +144,8 @@ up: ## Docker: starts the PHP-FPM service + Caddy webserver + Buggregator
 	$(call runDockerCompose,--file docker-compose.yml --file docker-compose.caddy.yml --file docker-compose.buggregator.yml up --detach --remove-orphans)
 
 .PHONY: logs
-logs: ## Docker: exposes the service logs
-	$(call runDockerCompose,logs)
+logs: ## Docker: exposes the service logs (use `make logs c=<app|caddy>` to filter by container)
+	$(call runDockerCompose,logs -f $(c))
 
 .PHONY: restart
 restart: ## Docker: restarts the service

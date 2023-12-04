@@ -11,3 +11,8 @@ services:
             - 9913:9913
         depends_on:
             - app
+        healthcheck:
+            test: curl --fail http://localhost:8000 || exit 1
+            interval: 10s
+            timeout: 1s
+            retries: 3
