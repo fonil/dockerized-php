@@ -92,35 +92,33 @@ If you want to customize the default website domain please:
 ```text
 .
 ├── build
-│   ├── dev
-│   │   └── usr/local/etc/php-fpm.d/www.conf				# PHP-FPM configuration file for DEVELOPMENT environment
-│   ├── prod
-│   │   └── usr/local/etc/php-fpm.d/www.conf				# PHP-FPM configuration file for DEVELOPMENT environment
+│   ├── dev/usr/local/etc/php-fpm.d/www.conf        # PHP-FPM configuration file for DEVELOPMENT environment
+│   ├── prod/usr/local/etc/php-fpm.d/www.conf       # PHP-FPM configuration file for DEVELOPMENT environment
 │   └── shared
-│       ├── etc/caddy/Caddyfile								# Caddy configuration file
-│       └── usr/shared/healthchecks/php-fpm.sh				# Shell script acting as healthcheck for main service application
-├── docker-compose-development.buggregator.yml				# docker-compose.yml with Buggregator service
-├── docker-compose-development.caddy.yml					# docker-compose.yml with Caddy service
-├── docker-compose-development.yml							# docker-compose.yml for DEVELOPMENT environment
-├── docker-compose-production.yml							# docker-compose.yml for PRODUCTION environment
-├── Dockerfile												# Multi-stage Dockerfile
+│       ├── etc/caddy/Caddyfile                     # Caddy configuration file
+│       └── usr/shared/healthchecks/php-fpm.sh      # Shell script acting as healthcheck for main service application
+├── docker-compose-development.buggregator.yml      # docker-compose.yml with Buggregator service
+├── docker-compose-development.caddy.yml            # docker-compose.yml with Caddy service
+├── docker-compose-development.yml                  # docker-compose.yml for DEVELOPMENT environment
+├── docker-compose-production.yml                   # docker-compose.yml for PRODUCTION environment
+├── Dockerfile                                      # Multi-stage Dockerfile
 ├── Makefile
-├── output													# Folder where logs and internally created files are stored
-│   ├── logs												# Infection logs
+├── output                                          # Folder where logs and internally created files are stored
+│   ├── logs                                        # Infection logs
 │   │   ├── infection.html
 │   │   ├── infection.log
 │   │   ├── infection-log.json
 │   │   ├── infection-per-mutator.md
 │   │   └── infection-summary.log
-│   └── reports												# PCOV reports
+│   └── reports                                     # PCOV reports
 │       └── coverage
 │           ├── html
 │           └── xml
 ├── README.md
-└── src														# Application service business logic
+└── src                                             # Application service business logic
     ├── app
     │   ├── Debug
-    │   │   └── Buggregator.php								# Buggregator bootstrap class
+    │   │   └── Buggregator.php                     # Buggregator bootstrap class
     │   └── Providers
     │       └── Foo.php
     ├── composer.json
@@ -131,15 +129,15 @@ If you want to customize the default website domain please:
     ├── phpstan.neon.dist
     ├── phpunit.xml
     ├── public
-    │   ├── index-debug.php									# Main application service entry point with Buggregator enabled
-    │   └── index.php										# Main application service entry point
-    ├── tests												# Test cases
+    │   ├── index-debug.php                         # Main application service entry point with Buggregator enabled
+    │   └── index.php                               # Main application service entry point
+    ├── tests                                       # Test cases
     │   ├── Hooks
     │   │   └── BypassFinalHook.php
     │   └── Unit
     │       └── Providers
     │           └── FooTest.php
-    └── vendor												# Application service dependencies
+    └── vendor                                      # Application service dependencies
 ```
 
 #### Logging
