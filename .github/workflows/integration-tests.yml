@@ -12,6 +12,10 @@ permissions:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+
+    env:
+      ENV: DEVELOPMENT
+      
     strategy:
       matrix:
         os: [ubuntu-latest]
