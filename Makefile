@@ -26,22 +26,29 @@ else
 	RESET   := ""
 endif
 
-CURRENT_UID   := $(shell id --user)
-CURRENT_GID   := $(shell id --group)
-CURRENT_UNAME := $(shell id --user --name)
-CURRENT_GNAME := $(shell id --group --name)
+HOST_USER_ID       := $(shell id --user)
+HOST_USER_NAME     := $(shell id --user --name)
+
+HOST_GROUP_ID      := $(shell id --group)
+HOST_GROUP_NAME    := $(shell id --group --name)
 
 WEBSITE_DOMAIN     = website.demo
 WEBSITE_URL        = https://$(WEBSITE_DOMAIN)
 BUGGREGATOR_URL    = http://localhost:8000/
 
+SERVICE_USER_NAME        = fpm
 SERVICE_NAME_APP         = app
 SERVICE_NAME_CADDY       = caddy
 SERVICE_NAME_BUGGREGATOR = buggregator
 
-DOCKER_COMPOSE              = @docker-compose
-DOCKER_COMPOSE_EXEC         = $(DOCKER_COMPOSE) exec $(SERVICE_NAME_APP)
-DOCKER_COMPOSE_EXEC_AS_USER = $(DOCKER_COMPOSE) exec --user=$(CURRENT_UNAME) $(SERVICE_NAME_APP)
+DOCKER_COMPOSE_FILE_PRODUCTION              = docker-compose-production.yml
+DOCKER_COMPOSE_FILE_DEVELOPMENT             = docker-compose-development.yml
+DOCKER_COMPOSE_FILE_DEVELOPMENT_CADDY       = docker-compose-development.caddy.yml
+DOCKER_COMPOSE_FILE_DEVELOPMENT_BUGGREGATOR = docker-compose-development.buggregator.yml
+
+DOCKER_COMPOSE                              = @docker-compose
+DOCKER_COMPOSE_EXEC                         = $(DOCKER_COMPOSE) --file=$(DOCKER_COMPOSE_FILE_DEVELOPMENT) exec $(SERVICE_NAME_APP)
+DOCKER_COMPOSE_EXEC_AS_USER                 = $(DOCKER_COMPOSE) --file=$(DOCKER_COMPOSE_FILE_DEVELOPMENT) exec --user=$(HOST_USER_NAME) $(SERVICE_NAME_APP)
 
 COMPOSER_SHARED_OPTIONS   = --ignore-platform-reqs --no-scripts --no-plugins --ansi --profile
 COMPOSER_OPTIMIZE_OPTIONS = --optimize-autoloader --with-all-dependencies
@@ -108,17 +115,21 @@ help:
 	@echo ""
 
 ###
-# HOSTS FILE
+# MISCELANEOUS
 ###
 
 .PHONY: show-context
 show-context: ## Setup: show context
 	$(call showInfo,"Showing context")
 	@echo ""
-	@echo " · User : (${CURRENT_UID}) ${CURRENT_UNAME}"
-	@echo " · Group: (${CURRENT_GID}) ${CURRENT_GNAME}"
+	@echo " · Host user : (${YELLOW}${HOST_USER_ID}${RESET}) ${YELLOW}${HOST_USER_NAME}${RESET}"
+	@echo " · Host group: (${YELLOW}${HOST_GROUP_ID}${RESET}) ${YELLOW}${HOST_GROUP_NAME}${RESET}"
 	@echo ""
-	@echo " · Website: ${WEBSITE_URL}"
+	@echo " · Service(s):"
+	@echo "   - ${YELLOW}${SERVICE_NAME_APP}${RESET} (${CYAN}${DOCKER_COMPOSE_FILE_DEVELOPMENT}${RESET})"
+	@echo "   - ${YELLOW}${SERVICE_NAME_CADDY}${RESET} (${CYAN}${DOCKER_COMPOSE_FILE_DEVELOPMENT_CADDY}${RESET})"
+	@echo "   - ${YELLOW}${SERVICE_NAME_BUGGREGATOR}${RESET} (${CYAN}${DOCKER_COMPOSE_FILE_DEVELOPMENT_BUGGREGATOR}${RESET})"
+	@echo ""
 	$(call taskDone)
 
 .PHONY: update-hosts-file
@@ -132,24 +143,55 @@ update-hosts-file: ## Setup: adds the website domain to /etc/hosts file
 ###
 
 .PHONY: build
-build: ## Docker: builds the service
-	$(call runDockerCompose,build)
+build: ## Docker: builds the DEVELOPMENT service
+	$(call runDockerCompose,--file=$(DOCKER_COMPOSE_FILE_DEVELOPMENT) build,--build-arg="HOST_USER_ID=$(HOST_USER_ID)" --build-arg="HOST_USER_NAME=$(HOST_USER_NAME)" --build-arg="HOST_GROUP_ID=$(HOST_GROUP_ID)" --build-arg="HOST_GROUP_NAME=$(HOST_GROUP_NAME)")
+
+.PHONY: up
+up: ## Docker: starts the PHP-FPM service
+	$(call runDockerCompose,--file=$(DOCKER_COMPOSE_FILE_DEVELOPMENT) up --detach --remove-orphans)
 
 .PHONY: down
 down: ## Docker: stops the service
-	$(call runDockerCompose,down --remove-orphans)
+	$(call runDockerCompose,--file=$(DOCKER_COMPOSE_FILE_DEVELOPMENT) down --remove-orphans)
 
-.PHONY: up
-up: ## Docker: starts the PHP-FPM service + Caddy webserver + Buggregator
-	$(call runDockerCompose,--file docker-compose.yml --file docker-compose.caddy.yml --file docker-compose.buggregator.yml up --detach --remove-orphans)
+.PHONY: up-caddy
+up-caddy: ## Docker: starts the Caddy webserver
+	$(call runDockerCompose,--file=$(DOCKER_COMPOSE_FILE_DEVELOPMENT) --file=$(DOCKER_COMPOSE_FILE_DEVELOPMENT_CADDY) up --detach --remove-orphans)
+
+.PHONY: up-buggregator
+up-buggregator: ## Docker: starts the Buggregator webserver
+	$(call runDockerCompose,--file=$(DOCKER_COMPOSE_FILE_DEVELOPMENT) --file=$(DOCKER_COMPOSE_FILE_DEVELOPMENT_CADDY) --file=$(DOCKER_COMPOSE_FILE_DEVELOPMENT_BUGGREGATOR) up --detach)
+
+.PHONY: run-caddy
+run-caddy: up-caddy update-hosts-file ## Application: starts the PHP-FPM service with Caddy
+	$(call showInfo,"Website ready! Please visit:",$(CYAN)$(WEBSITE_URL)$(RESET))
+	@echo ""
+	$(call showAlert,"Remember to install PHP dependencies by executing:",$(YELLOW)make composer-install$(RESET))
+	@echo ""
+	$(call showAlert,"If you experiment any issue related with SSL certificate please execute:",$(YELLOW)make install-caddy-certificate$(RESET))
+	@echo ""
+	$(call taskDone)
+
+.PHONY: run-buggregator
+run-buggregator: up-buggregator update-hosts-file ## Application: starts the PHP-FPM service with Caddy and Buggregator
+	$(call showInfo,"Website ready! Please visit:",$(CYAN)$(WEBSITE_URL)$(RESET))
+	@echo ""
+	$(call showInfo,"You can visit the debug server from here:",$(CYAN)$(BUGGREGATOR_URL)$(RESET))
+	@echo ""
+	$(call showInfo,"You can enable XHProf at any time just by adding the following query string:",$(CYAN)$(WEBSITE_URL)?profiler$(RESET))
+	@echo ""
+	$(call showAlert,"Remember to install PHP dependencies by executing:",$(YELLOW)make composer-install$(RESET))
+	@echo ""
+	$(call showAlert,"If you experiment any issue related with SSL certificate please execute:",$(YELLOW)make install-caddy-certificate$(RESET))
+	$(call taskDone)
 
 .PHONY: logs
-logs: ## Docker: exposes the service logs (use `make logs c=<app|caddy>` to filter by container)
-	$(call runDockerCompose,logs -f $(c))
+logs: ## Docker: exposes the service logs
+	$(call runDockerCompose,--file=$(DOCKER_COMPOSE_FILE_DEVELOPMENT) logs)
 
 .PHONY: restart
 restart: ## Docker: restarts the service
-	$(call runDockerCompose,restart $(SERVICE_NAME_APP))
+	$(call runDockerCompose,--file=$(DOCKER_COMPOSE_FILE_DEVELOPMENT) restart $(SERVICE_NAME_APP))
 
 .PHONY: bash
 bash: ## Docker: establish a bash session into main container
@@ -224,10 +266,10 @@ phpstan: ## Application: runs PHPStan
 	$(call runDockerComposeExecAsUser,./vendor/bin/phpstan analyse --level 9 --memory-limit 1G --ansi ./app ./tests)
 
 .PHONY: tests
-tests: paratest infection ## Application: runs ParaTest + Infection
+tests: up paratest infection ## Application: runs ParaTest + Infection
 
 ###
-# MISCELANEOUS
+# APPLICATION SERVICE
 ###
 
 .PHONY: version
@@ -235,20 +277,8 @@ version: ## Application: displays the PHP Version
 	$(call runDockerComposeExecAsUser,php -v)
 
 .PHONY: info
-info: ## Application: displays the php.init details
+info: ## Application: displays the php.ini details
 	$(call runDockerComposeExecAsUser,php -i)
-
-.PHONY: run
-run: up composer-install update-hosts-file ## Application: starts the services & installs dependencies & check host file
-	$(call showInfo,"Website is ready!")
-	$(call showInfo,"You can visit the website from here:",$(CYAN)$(WEBSITE_URL)$(RESET))
-	$(call showInfo,"You can visit the debug server from here:",$(CYAN)$(BUGGREGATOR_URL)$(RESET))
-	@echo ""
-	$(call showInfo,"You can enable XHProf at any time just by adding the following query string:",$(CYAN)$(WEBSITE_URL)?profiler$(RESET))
-	@echo ""
-	$(call showAlert,"If you experiment any issue related with SSL certificate please execute:",$(YELLOW)make install-caddy-certificate$(RESET))
-	@echo ""
-	$(call taskDone)
 
 ###
 # CADDY RELATED
@@ -258,7 +288,7 @@ run: up composer-install update-hosts-file ## Application: starts the services &
 install-caddy-certificate: ## Caddy: installs Caddy Local Authority certificate
 	@echo "Installing [ $(YELLOW)Caddy Local Authority - 20XX ECC Root$(RESET) ] as a valid Certificate Authority"
 	$(call orderedList,1,"Copy the root certificate from Caddy Docker container")
-	@docker compose cp $(SERVICE_NAME_CADDY):/data/caddy/pki/authorities/local/root.crt ./caddy-root-ca-authority.crt
+	@docker-compose cp $(SERVICE_NAME_CADDY):/data/caddy/pki/authorities/local/root.crt ./caddy-root-ca-authority.crt
 	$(call orderedList,2,"Install the Caddy Authority certificate into your browser")
 	@echo "$(YELLOW)Chrome-based browsers (Chrome, Brave, etc)$(RESET)"
 	@echo "- Go to [ Settings / Privacy & Security / Security / Manage Certificates / Authorities ]"
@@ -273,4 +303,18 @@ install-caddy-certificate: ## Caddy: installs Caddy Local Authority certificate
 	@echo "- Save changes"
 	@echo ""
 	$(call showInfo,"For further information, please visit https://caddyserver.com/docs/running#docker-compose")
+	$(call taskDone)
+
+###
+# PRODUCTION RELATED
+###
+
+.PHONY: check-production
+check-production: update-hosts-file ## Docker: Checks the service(s) in PRODUCTION mode
+	@docker build --target=build-production --tag $(SERVICE_NAME_APP):production .
+	$(call runDockerCompose,--file=$(DOCKER_COMPOSE_FILE_PRODUCTION) up --detach --remove-orphans)
+	$(call showInfo,"Website ready! Please visit:",$(CYAN)$(WEBSITE_URL)$(RESET))
+	@echo ""
+	$(call showAlert,"If you experiment any issue related with SSL certificate please execute:",$(YELLOW)make install-caddy-certificate$(RESET))
+	@echo ""
 	$(call taskDone)

@@ -4,21 +4,15 @@ services:
     app:
         container_name: app
         build:
-            context: ./build
+            context: .
             dockerfile: Dockerfile
-            target: development
-            args:
-                CURRENT_UNAME: alcides
-                CURRENT_GNAME: alcides
-                CURRENT_UID: 1000
-                CURRENT_GID: 1000
+            target: build-development
         restart: unless-stopped
         tty: true
-        working_dir: /code
         volumes:
             - ./src:/code
             - ./output:/output
-            - ./build/usr/shared/healthchecks/php-fpm.sh:/usr/shared/healthchecks/php-fpm.sh:ro
+            - ./build/shared/usr/shared/healthchecks/php-fpm.sh:/usr/shared/healthchecks/php-fpm.sh:ro
         healthcheck:
             test: ["CMD", "/usr/shared/healthchecks/php-fpm.sh"]
             interval: 10s

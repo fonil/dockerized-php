@@ -10,13 +10,12 @@
 
 This repository allows you to create containerized PHP applications and/or microservices using Docker and Caddy.
 
-The Docker image is based on **php:8.3.0-fpm-alpine3.18** in order to keep bade image as much lightweight as possible.
+The Docker image is based on **php:8.3.2-fpm-alpine3.19** in order to keep bade image as much lightweight as possible.
 
 ### Highlights
 
-- Lightweight: main service Docker image only requires **94.5MB**.
 - **Self-signed local domains** thanks to Caddy.
-- Unified environment to build CLI and/or web applications with PHP8.
+- Unified environment to build **CLI** and/or web applications with **PHP8**.
 - Code Coverage, PHPUnit, Paratest, PHPInsights, PHPStan and Linters by default.
 - Includes [Buggregator](https://buggregator.dev) as main debug server.
 
@@ -62,18 +61,16 @@ $ git clone git@github.com:fonil/dockerized-php.git .
 
 To avoid conflicts with ownership and/or file permission from those files internally created by the container service, a non-root user is created into the service with the same ID and group name than the current host user, and forcing the service to be executed with this user and group when creating files.
 
-Those details are in the `docker-compose.yml` file and contains the following arguments. 
+Those details are in the `Makefile` file and contains the following arguments. 
 
-| Argument        | How to fill the value | Description                |
-| --------------- | --------------------- | -------------------------- |
-| `CURRENT_UNAME` | `$ id --user --name`  | Current host user name     |
-| `CURRENT_GNAME` | `$ id --group --name` | Current host group name    |
-| `CURRENT_UID`   | `$ id --user`         | Current host user ID       |
-| `CURRENT_GID`   | `$ id --group`        | Current host user group ID |
+| Argument          | How to fill the value | Description                |
+| ----------------- | --------------------- | -------------------------- |
+| `HOST_USER_NAME`  | `$ id --user --name`  | Current host user name     |
+| `HOST_GROUP_NAME` | `$ id --group --name` | Current host group name    |
+| `HOST_USER_ID`    | `$ id --user`         | Current host user ID       |
+| `HOST_GROUP_ID`   | `$ id --group`        | Current host user group ID |
 
-Defining those values here allows you to execute `docker compose` and/or the *Makefile* commands (`make build`, `make up`...) with 100% compatibility.
-
-> I recommend you to use your current user name/group to avoid conflicts when executing commands that creates files inside the container (for example `make composer install`, etc.)  
+> Defining those variables here allows you to execute any *Makefile* command (`make build`, `make up`...) with 100% compatibility.  
 
 #### Application
 
@@ -92,22 +89,58 @@ If you want to customize the default website domain please:
 
 #### Directory structure
 
-| Folder                          | Description                                                                                       |
-|---------------------------------| ------------------------------------------------------------------------------------------------- |
-| `build`                         | The `build` directory contains config files required by PHP-FPM, Caddy...                         |
-| `build/etc/caddy`               | The `build/etc/caddy` directory contains required Caddy's config file (`Caddyfile`).              |
-| `build/usr/local/etc/php-fpm.d` | The `build/usr/local/etc/php-fpm.d` directory contains required PHP-FPM config file (`www.conf`). |
-| `build/shared/healthchecks`     | The `build/shared/healthchecks` directory contains the PHP-FPM healthcheck file (`php-fpm.sh`).   |
-| `src`                           | The `src` directory contains the source code of your application.                                 |
-| `src/app`                       | The `app` directory contains your business logic.[^1]                                             |
-| `src/public`                    | The `public` directory contains the `index.php` file which bootstraps the application.            |
-| `src/tests`                     | The `tests` directory contains your automated tests.                                              |
-| `src/vendor`                    | The `vendor` directory contains your [Composer](https://getcomposer.org/) dependencies.           |
-| `output`                        | The `output` directory contains any file internally generated from the container service.         |
-
-[^1]: Any class of file located under `app` directory will be loaded with `App` namespace by Composer using the [PSR-4 autoloading standard](https://www.php-fig.org/psr/psr-4/)
-
-> If you take a look to [docker-compose.yml#L18](https://github.com/fonil/dockerized-php/blob/main/docker-compose.yml#L18), source code is mounted as a volume into the application container. This setup allows you to modify the source code of your application on your host within your preferred IDE and automatically have those changes synchronized in the container 😃
+```text
+.
+├── build
+│   ├── dev
+│   │   └── usr/local/etc/php-fpm.d/www.conf				# PHP-FPM configuration file for DEVELOPMENT environment
+│   ├── prod
+│   │   └── usr/local/etc/php-fpm.d/www.conf				# PHP-FPM configuration file for DEVELOPMENT environment
+│   └── shared
+│       ├── etc/caddy/Caddyfile								# Caddy configuration file
+│       └── usr/shared/healthchecks/php-fpm.sh				# Shell script acting as healthcheck for main service application
+├── docker-compose-development.buggregator.yml				# docker-compose.yml with Buggregator service
+├── docker-compose-development.caddy.yml					# docker-compose.yml with Caddy service
+├── docker-compose-development.yml							# docker-compose.yml for DEVELOPMENT environment
+├── docker-compose-production.yml							# docker-compose.yml for PRODUCTION environment
+├── Dockerfile												# Multi-stage Dockerfile
+├── Makefile
+├── output													# Folder where logs and internally created files are stored
+│   ├── logs												# Infection logs
+│   │   ├── infection.html
+│   │   ├── infection.log
+│   │   ├── infection-log.json
+│   │   ├── infection-per-mutator.md
+│   │   └── infection-summary.log
+│   └── reports												# PCOV reports
+│       └── coverage
+│           ├── html
+│           └── xml
+├── README.md
+└── src														# Application service business logic
+    ├── app
+    │   ├── Debug
+    │   │   └── Buggregator.php								# Buggregator bootstrap class
+    │   └── Providers
+    │       └── Foo.php
+    ├── composer.json
+    ├── composer.lock
+    ├── infection.json
+    ├── phpcs.xml
+    ├── phpinsights.php
+    ├── phpstan.neon.dist
+    ├── phpunit.xml
+    ├── public
+    │   ├── index-debug.php									# Main application service entry point with Buggregator enabled
+    │   └── index.php										# Main application service entry point
+    ├── tests												# Test cases
+    │   ├── Hooks
+    │   │   └── BypassFinalHook.php
+    │   └── Unit
+    │       └── Providers
+    │           └── FooTest.php
+    └── vendor												# Application service dependencies
+```
 
 #### Logging
 
@@ -129,6 +162,24 @@ Default unit test just verifies the instance returns.
 
 > This default application has being created as a skeleton and it should be replaced by your business logic.
 
+#### Certificate Authority (CA) & SSL Certificate
+
+<u>Caddy uses HTTPS by default</u>. In order to avoid SSL certificates issues you must install the Caddy Authority Certificate on your browser. This is a one-time action due the certificate does not change after rebuilding/restarting the service.
+
+> A _Makefile_ command called `make install-caddy-certificate` is provided and copies the Caddy root certificate from the Caddy container service into current application path, and displays the steps you need to follow to install this certificate in your browser. 
+
+### Environments
+
+The container service on development environment requires some debugging extensions than the production environment doesn't require and the way the source code is mounted into each environment differs:  
+
+#### Development
+
+On development environment the source code is mounted as a synchronized volume between the host and the container service, so any change on the source code from the host is automatically synchronized inside the service container.
+
+#### Production
+
+On production environment the source code is copied into the service container like an snapshot, which is the standard way to deploy PHP applications. 
+
 ### Available commands
 
 A _Makefile_ is provided with some predefined commands:
@@ -144,12 +195,16 @@ A _Makefile_ is provided with some predefined commands:
 
 · show-context                   Setup: show context
 · update-hosts-file              Setup: adds the website domain to /etc/hosts file
-· build                          Docker: builds the service
+· build                          Docker: builds the DEVELOPMENT service
+· up                             Docker: starts the PHP-FPM service
 · down                           Docker: stops the service
-· up                             Docker: starts the service + Caddy webserver + Buggregator
+· up-caddy                       Docker: starts the Caddy webserver
+· up-buggregator                 Docker: starts the Buggregator webserver
+· run-caddy                      Application: starts the PHP-FPM service with Caddy
+· run-buggregator                Application: starts the PHP-FPM service with Caddy and Buggregator
 · logs                           Docker: exposes the service logs
 · restart                        Docker: restarts the service
-· bash                           Docker: stablish a bash session into main container
+· bash                           Docker: establish a bash session into main container
 · composer-dump                  Composer: runs <composer dump-auto>
 · composer-install               Composer: runs <composer install>
 · composer-remove                Composer: runs <composer remove>
@@ -166,34 +221,57 @@ A _Makefile_ is provided with some predefined commands:
 · phpstan                        Application: runs PHPStan
 · tests                          Application: runs ParaTest + Infection
 · version                        Application: displays the PHP Version
-· info                           Application: displays the php.init details
-· run                            Application: Application: starts the services & installs dependencies & check host file
+· info                           Application: displays the php.ini details
 · install-caddy-certificate      Caddy: installs Caddy Local Authority certificate
+· check-prod                     Docker: Checks the service(s) in PRODUCTION mode
 ```
 
-#### Build the service
+#### Development Environment
+
+##### Build the service
 
 ```bash
 ~/path/to/my-new-project$ make build
 ```
 
-#### Run the service
+##### Run the service
+
+###### Only the PHP-FPM service
 
 ```bash
-~/path/to/my-new-project$ make run
+~/path/to/my-new-project$ make up
 ```
 
-##### Certificate Authority (CA) & SSL Certificate
+###### PHP-FPM + Caddy
 
-Caddy uses HTTPS **by default**. In order to avoid SSL certificates issues you must install the Caddy Authority Certificate on your browser. This is a one-time action due the certificate does not change after rebuilding/restarting the service.
+```bash
+~/path/to/my-new-project$ make up-caddy
+```
 
-> A _Makefile_ command called `make install-caddy-certificate` is provided and copies the Caddy root certificate from the Caddy container service into current application path, and displays the steps you need to follow to install this certificate in your browser. 
+###### PHP-FPM + Caddy + Buggregator
 
-#### Stop the service
+```bash
+~/path/to/my-new-project$ make up-buggregator
+```
+
+##### Stop the service
 
 ```bash
 ~/path/to/my-new-project$ make down
 ```
+
+#### Production Environment
+
+##### Check the service
+
+```bash
+~/path/to/my-new-project$ make check-production
+```
+
+This command performs the following tasks:
+
+- Ensure the domain name is present in you `/etc/hosts` file. If not present, your user password is requested in order to add the entry line.
+- Build the container service using `docker-compose-production.yml`file
 
 #### Dealing with Code Quality
 

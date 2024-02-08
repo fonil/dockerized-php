@@ -28,22 +28,19 @@ final class FooTest extends TestCase
     }
 
     /**
-     * @covers \App\Providers\Foo::__invoke
+     * @covers \App\Providers\Foo::dump
      *
-     * @dataProvider dataProviderForInvoke
+     * @dataProvider dataProviderForDump
      */
     public function testInvoke(string $expectedClass, string $expectedLog): void
     {
-        $instance = new Foo();
+        $log = Foo::dump();
 
-        $log = $instance->__invoke();
-
-        $this->assertEquals($expectedClass, $instance::class);
         $this->assertEquals($expectedLog, $log);
     }
 
     /**
-     * @covers \App\Providers\Foo::__invoke
+     * @covers \App\Providers\Foo::dump
      */
     public function testMock(): void
     {
@@ -56,12 +53,12 @@ final class FooTest extends TestCase
     /**
      * @return array<int, DataProviderEntry>
      */
-    public static function dataProviderForInvoke(): array
+    public static function dataProviderForDump(): array
     {
         return [
             [
                 Foo::class,
-                '[01-Jan-2023 00:00:00] App\Providers\Foo: Executed method __invoke' . PHP_EOL,
+                '[01-Jan-2023 00:00:00] App\Providers\Foo: Executed method [ dump ] in [ DEVELOPMENT ] mode' . PHP_EOL,
             ],
         ];
     }

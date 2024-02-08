@@ -5,14 +5,25 @@ volumes:
   caddy_config:
 
 services:
+    app:
+        container_name: app
+        image: app:production
+        restart: unless-stopped
+        tty: true
+        healthcheck:
+            test: ["CMD", "/usr/shared/healthchecks/php-fpm.sh"]
+            interval: 10s
+            timeout: 1s
+            retries: 3
+
     caddy:
         container_name: caddy
-        image: caddy:alpine
+        image: caddy:2.7.6-alpine
         restart: unless-stopped
         volumes:
             - caddy_data:/data
             - caddy_config:/config
-            - ./build/etc/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+            - ./build/shared/etc/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
             - ./src:/code
         ports:
             - 80:80
