@@ -2,20 +2,18 @@
 
 # Dockerized PHP
 
-> A dockerized lightweight PHP development environment supporting **self signed local domains** powered by Caddy
+> A Docker container with a lightweight PHP development environment supporting **self signed local domains** powered by Caddy
 
 [TOC]
 
 ## Summary
 
-This repository allows you to create containerized PHP applications and/or microservices using Docker and Caddy.
-
-The Docker image is based on **php:8.3.2-fpm-alpine3.19** in order to keep bade image as much lightweight as possible.
+This repository contains a Docker container based on **php:8.3.2-fpm-alpine3.19** allowing you to create <u>microservices</u> and/or <u>web applications</u> using Caddy and Buggregator.
 
 ### Highlights
 
 - **Self-signed local domains** thanks to Caddy.
-- Unified environment to build **CLI** and/or web applications with **PHP8**.
+- Unified environment to build CLI and/or web applications with **PHP8**.
 - Code Coverage, PHPUnit, Paratest, PHPInsights, PHPStan and Linters by default.
 - Includes [Buggregator](https://buggregator.dev) as main debug server.
 
@@ -59,9 +57,9 @@ $ git clone git@github.com:fonil/dockerized-php.git .
 
 #### Build Arguments
 
-To avoid conflicts with ownership and/or file permission from those files internally created by the container service, a non-root user is created into the service with the same ID and group name than the current host user, and forcing the service to be executed with this user and group when creating files.
+To avoid file permissions conflicts between host and container, a non-root user is created into the service with the same ID and group name than the current host user and setting up PHP-FPM to be executed using those details so, any file created by the service will have the same owner/group than the host user.
 
-Those details are in the `Makefile` file and contains the following arguments. 
+Those details are collected from the `Makefile` and passing the values to Dockerfile as build arguments: 
 
 | Argument          | How to fill the value | Description                |
 | ----------------- | --------------------- | -------------------------- |
@@ -69,8 +67,6 @@ Those details are in the `Makefile` file and contains the following arguments.
 | `HOST_GROUP_NAME` | `$ id --group --name` | Current host group name    |
 | `HOST_USER_ID`    | `$ id --user`         | Current host user ID       |
 | `HOST_GROUP_ID`   | `$ id --group`        | Current host user group ID |
-
-> Defining those variables here allows you to execute any *Makefile* command (`make build`, `make up`...) with 100% compatibility.  
 
 #### Application
 
@@ -144,7 +140,7 @@ If you want to customize the default website domain please:
 
 The application logs to `STDOUT` by default.
 
-##### Mocking Date/Time functions
+#### Mocking Date/Time functions
 
 To allow testing with date and/or time variations, [slope-it/clock-mock](https://github.com/slope-it/clock-mock) is added as dependency into `src/composer.json`.
 
@@ -152,7 +148,7 @@ This library provides a way for mocking the current timestamp used by PHP for `\
 
 > It requires the [uopz extension](https://github.com/krakjoe/uopz), that is why `Dockerfile` references to it.
 
-#### Default Application
+#### Application Business Logic
 
 Default application just print outs `Class [ App\Providers\Foo ]` from `Foo` final class placed at `src/app/Providers`.
 
@@ -166,17 +162,55 @@ Default unit test just verifies the instance returns.
 
 > A _Makefile_ command called `make install-caddy-certificate` is provided and copies the Caddy root certificate from the Caddy container service into current application path, and displays the steps you need to follow to install this certificate in your browser. 
 
-### Environments
+#### Docker Compose files
 
-The container service on development environment requires some debugging extensions than the production environment doesn't require and the way the source code is mounted into each environment differs:  
+As you can see there are several docker compose files:
+
+| Docker Compose file name                     | Environment | Description                                                  |
+| -------------------------------------------- | ----------- | ------------------------------------------------------------ |
+| `docker-compose-development.yml`             | DEVELOPMENT | Application service Docker Compose file for **DEVELOPMENT** environment |
+| `docker-compose-development.caddy.yml`       | DEVELOPMENT | Caddy service Docker Compose file                            |
+| `docker-compose-development.buggregator.yml` | DEVELOPMENT | Buggregator service Docker Compose file                      |
+| `docker-compose-production.yml`              | PRODUCTION  | Application service Docker Compose file for **PRODUCTION** environment |
+
+> With this setup you can develop microservices and/or web applications just by combining those file accordingly
+
+### Environments
 
 #### Development
 
-On development environment the source code is mounted as a synchronized volume between the host and the container service, so any change on the source code from the host is automatically synchronized inside the service container.
+Development environment allows you to develop, test and debug your application using PHPUnit, PCOV, Infection and mock Date/Time functions on your tests. Additionally you can debug and profile your application using Buggregator, which includes XHProf and that is why some specific extensions are required on the development Dockerfile stage for this environment. 
 
 #### Production
 
-On production environment the source code is copied into the service container like an snapshot, which is the standard way to deploy PHP applications. 
+Production environment allows you deploy the generated container service without any development extension.
+
+#### Development vs Production
+
+##### Docker Compose files
+
+| Docker Compose file | DEVELOPMENT                                    | PRODUCTION                      |
+| ------------------- | ---------------------------------------------- | ------------------------------- |
+| Application         | ``docker-compose-development.yml``             | `docker-compose-production.yml` |
+| Caddy               | ``docker-compose-development.caddy.yml``       | ⨉                               |
+| Buggregator         | ``docker-compose-development.buggregator.yml`` | ⨉                               |
+
+##### Applicacions & Extensions
+
+| Extensions | DEVELOPMENT | PRODUCTION | Description                                                  |
+| ---------- | ----------- | ---------- | ------------------------------------------------------------ |
+| FCGI       | ✓           | ✓          | Required to perform the Docker health check                  |
+| Bash       | ✓           | ⨉          | Required to establish a Bash terminal between host and container service |
+| PCOV       | ✓           | ⨉          | Required to generate Code Coverage reports                   |
+| UOPZ       | ✓           | ⨉          | Required to mock Date/Time functions on your tests           |
+| XHPROF     | ✓           | ⨉          | Required to profile the application using XHProf             |
+
+##### Volumes
+
+| Volumes  | DEVELOPMENT | PRODUCTION | Description                                |
+| -------- | ----------- | ---------- | ------------------------------------------ |
+| `src`    | ✓           | ⨉          | Volume required to sync host and container |
+| `output` | ✓           | ⨉          | Volume required to sync host and container |
 
 ### Available commands
 
@@ -224,52 +258,53 @@ A _Makefile_ is provided with some predefined commands:
 · check-prod                     Docker: Checks the service(s) in PRODUCTION mode
 ```
 
-#### Development Environment
+#### Environments
 
-##### Build the service
+##### Development
+
+###### Build the service
 
 ```bash
 ~/path/to/my-new-project$ make build
 ```
 
-##### Run the service
-
-###### Only the PHP-FPM service
+###### Run only PHP-FPM
 
 ```bash
 ~/path/to/my-new-project$ make up
 ```
 
-###### PHP-FPM + Caddy
+###### Run PHP-FPM + Caddy
 
 ```bash
 ~/path/to/my-new-project$ make up-caddy
 ```
 
-###### PHP-FPM + Caddy + Buggregator
+###### Run PHP-FPM + Caddy + Buggregator
 
 ```bash
 ~/path/to/my-new-project$ make up-buggregator
 ```
 
-##### Stop the service
+###### Stop the service
 
 ```bash
 ~/path/to/my-new-project$ make down
 ```
 
-#### Production Environment
+##### Production
 
-##### Check the service
+###### Check the service
 
 ```bash
 ~/path/to/my-new-project$ make check-production
 ```
 
-This command performs the following tasks:
+In order to simplify this process, this command performs the following actions:
 
-- Ensure the domain name is present in you `/etc/hosts` file. If not present, your user password is requested in order to add the entry line.
+- As this example is a web application, ensure the domain entry is present in you `/etc/hosts` file. 
 - Build the container service using `docker-compose-production.yml`file
+- Start the service in cooperation with a Caddy server using the default `Caddyfile` 
 
 #### Dealing with Code Quality
 
@@ -305,14 +340,6 @@ This command performs the following tasks:
 ```
 
 > This command executes the mutation testing tool
-
-##### Reports
-
-PHPUnit/Paratest/Infection are configured to store the PHP Code Coverage report into `output/coverage`
-
-##### Logs
-
-Infection is configured to store the logs into `output/logs/infection`
 
 ## Security Vulnerabilities
 
