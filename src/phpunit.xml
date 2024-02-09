@@ -30,6 +30,9 @@
         <testsuite name="Unit Tests">
             <directory suffix=".php">tests/Unit</directory>
         </testsuite>
+        <testsuite name="Integration Tests">
+            <directory suffix=".php">tests/Integration</directory>
+        </testsuite>
     </testsuites>
 
     <coverage

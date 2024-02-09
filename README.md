@@ -227,35 +227,37 @@ A _Makefile_ is provided with some predefined commands:
 
 · show-context                   Setup: show context
 · update-hosts-file              Setup: adds the website domain to /etc/hosts file
+· install-caddy-certificate      Setup: installs Caddy Local Authority certificate
 · build                          Docker: builds the DEVELOPMENT service
 · up                             Docker: starts the PHP-FPM service
-· down                           Docker: stops the service
-· up-caddy                       Docker: starts the Caddy webserver
-· up-buggregator                 Docker: starts the Buggregator webserver
-· run-caddy                      Application: starts the PHP-FPM service with Caddy
-· run-buggregator                Application: starts the PHP-FPM service with Caddy and Buggregator
+· up-caddy                       Docker: starts the Caddy service
+· up-buggregator                 Docker: starts the Buggregator service
+· restart                        Docker: restarts the PHP-FPM service
+· restart-caddy                  Docker: restarts the Caddy service
+· restart-buggregator            Docker: restarts the Buggregatgor service
+· down                           Docker: stops the service(s)
 · logs                           Docker: exposes the service logs
-· restart                        Docker: restarts the service
 · bash                           Docker: establish a bash session into main container
-· composer-dump                  Composer: runs <composer dump-auto>
-· composer-install               Composer: runs <composer install>
-· composer-remove                Composer: runs <composer remove>
-· composer-require-dev           Composer: runs <composer require --dev>
-· composer-require               Composer: runs <composer require>
-· composer-update                Composer: runs <composer update>
-· linter                         Application: runs the PHP Linter in parallel mode
-· phpcs                          Application: runs the PHPCodeSniffer to fix possible issues
-· phpcbf                         Application: runs the PHPCodeBeautifier to fix possible issues
-· phpinsights                    Application: runs the PHPInsights to fix possible issues
-· infection                      Application: runs the Infection test suite
-· paratest                       Application: runs the PHPUnit test suite in parallel mode
-· phpunit                        Application: runs the PHPUnit test suite
-· phpstan                        Application: runs PHPStan
-· tests                          Application: runs ParaTest + Infection
+· run-caddy                      Docker: starts the PHP-FPM service with Caddy
+· run-buggregator                Docker: starts the PHP-FPM service with Caddy and Buggregator
+· composer-dump                  Application: <composer dump-auto>
+· composer-install               Application: <composer install>
+· composer-remove                Application: <composer remove>
+· composer-require-dev           Application: <composer require --dev>
+· composer-require               Application: <composer require>
+· composer-update                Application: <composer update>
+· linter                         Application: <composer linter>
+· phpcs                          Application: <composer phpcbs>
+· phpcbf                         Application: <composer phpcbf>
+· phpstan                        Application: <composer phpstan>
+· phpinsights                    Application: <composer phpinsights>
+· mutation                       Application: <composer test-mutation>
+· paratest                       Application: <composer paratest>
+· phpunit                        Application: <composer test>
+· tests                          Application: runs ParaTest + Mutation
 · version                        Application: displays the PHP Version
 · info                           Application: displays the php.ini details
-· install-caddy-certificate      Caddy: installs Caddy Local Authority certificate
-· check-prod                     Docker: Checks the service(s) in PRODUCTION mode
+· check-production               Miscelaneous: Checks the service(s) in PRODUCTION mode
 ```
 
 #### Environments
@@ -336,7 +338,7 @@ In order to simplify this process, this command performs the following actions:
 > This command executes PHPUnit in parallel mode
 
 ```bash
-~/path/to/my-new-project$ make infection
+~/path/to/my-new-project$ make mutation
 ```
 
 > This command executes the mutation testing tool

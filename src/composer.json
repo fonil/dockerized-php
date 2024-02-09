@@ -55,6 +55,21 @@
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
     },
+    "scripts": {
+        "phpstan"         : "phpstan analyse --level=9 --memory-limit=1G --ansi ./app ./tests",
+        "phpinsights"     : "phpinsights --fix",
+
+        "paratest"        : "php -d pcov.enabled=1 ./vendor/bin/paratest --passthru-php=\"'-d' 'pcov.enabled=1'\" --coverage-text --coverage-xml=/output/reports/coverage/xml --coverage-html=/output/reports/coverage/html --log-junit=/output/reports/coverage/junit.xml",
+       
+        "test"            : "phpunit --coverage-text --coverage-xml=/output/reports/coverage/xml --coverage-html=/output/reports/coverage/html --log-junit=/output/reports/coverage/junit.xml --coverage-cache=/output/.cache/coverage",
+        "test-unit"       : "phpunit --coverage-text --coverage-xml=/output/reports/coverage/xml --coverage-html=/output/reports/coverage/html --log-junit=/output/reports/coverage/junit.xml --coverage-cache=/output/.cache/coverage --testsuite=\"Unit Tests\"",
+        "test-integration": "phpunit --coverage-text --coverage-xml=/output/reports/coverage/xml --coverage-html=/output/reports/coverage/html --log-junit=/output/reports/coverage/junit.xml --coverage-cache=/output/.cache/coverage --testsuite=\"Integration Tests\"",
+        "test-mutation"   : "infection --configuration=infection.json --coverage=/output/reports/coverage --threads=3 --ansi",
+
+        "linter"          : "parallel-lint -e php -j 10 --colors ./app ./tests",
+        "phpcs"           : "phpcs --standard=PSR12 ./app ./tests",
+        "phpcbf"          : "phpcbf --standard=PSR12 ./app ./tests"
+    },
     "minimum-stability": "stable",
     "prefer-stable": true
 }
