@@ -43,7 +43,7 @@
         "psr-4": {
             "Hooks\\": "tests/Hooks",
             "UnitTests\\": "tests/Unit",
-            "FeatureTests\\": "tests/Feature"
+            "IntegrationTests\\": "tests/Integration"
         }
     },
     "config": {

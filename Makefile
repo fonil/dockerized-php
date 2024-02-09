@@ -229,59 +229,59 @@ run-buggregator: update-hosts-file up-buggregator ## Docker: starts the PHP-FPM 
 ###
 
 .PHONY: composer-dump
-composer-dump: ## Application: <composer dump-auto>
+composer-dump: up ## Application: <composer dump-auto>
 	$(call runDockerComposeExecAsUser,composer dump-auto --optimize,$(COMPOSER_SHARED_OPTIONS))
 
 .PHONY: composer-install
-composer-install: ## Application: <composer install>
+composer-install: up ## Application: <composer install>
 	$(call runDockerComposeExecAsUser,composer install --optimize-autoloader,$(COMPOSER_SHARED_OPTIONS))
 
 .PHONY: composer-remove
-composer-remove: ## Application: <composer remove>
+composer-remove: up ## Application: <composer remove>
 	$(call runDockerComposeExecAsUser,composer remove $(COMPOSER_OPTIMIZE_OPTIONS),$(COMPOSER_SHARED_OPTIONS))
 
 .PHONY: composer-require-dev
-composer-require-dev: ## Application: <composer require --dev>
+composer-require-dev: up ## Application: <composer require --dev>
 	$(call runDockerComposeExecAsUser,composer require $(COMPOSER_OPTIMIZE_OPTIONS) --dev,$(COMPOSER_SHARED_OPTIONS))
 
 .PHONY: composer-require
-composer-require: ## Application: <composer require>
+composer-require: up ## Application: <composer require>
 	$(call runDockerComposeExecAsUser,composer require $(COMPOSER_OPTIMIZE_OPTIONS),$(COMPOSER_SHARED_OPTIONS))
 
 .PHONY: composer-update
-composer-update: ## Application: <composer update>
+composer-update: up ## Application: <composer update>
 	$(call runDockerComposeExecAsUser,composer update $(COMPOSER_OPTIMIZE_OPTIONS),$(COMPOSER_SHARED_OPTIONS))
 
 .PHONY: linter
-linter: ## Application: <composer linter>
+linter: up ## Application: <composer linter>
 	$(call runDockerComposeExecAsUser,composer linter)
 
 .PHONY: phpcs
-phpcs: ## Application: <composer phpcbs>
+phpcs: up ## Application: <composer phpcbs>
 	$(call runDockerComposeExecAsUser,composer phpcs)
 
 .PHONY: phpcbf
-phpcbf: ## Application: <composer phpcbf>
+phpcbf: up ## Application: <composer phpcbf>
 	$(call runDockerComposeExecAsUser,composer phpcbf)
 
 .PHONY: phpstan
-phpstan: ## Application: <composer phpstan>
+phpstan: up ## Application: <composer phpstan>
 	$(call runDockerComposeExecAsUser,composer phpstan)
 
 .PHONY: phpinsights
-phpinsights: ## Application: <composer phpinsights>
+phpinsights: up ## Application: <composer phpinsights>
 	$(call runDockerComposeExecAsUser,composer phpinsights)
 
 .PHONY: mutation
-mutation: ## Application: <composer test-mutation>
+mutation: up ## Application: <composer test-mutation>
 	$(call runDockerComposeExecAsUser,composer test-mutation)
 
 .PHONY: paratest
-paratest: ## Application: <composer paratest>
+paratest: up ## Application: <composer paratest>
 	$(call runDockerComposeExecAsUser,composer paratest)
 
 .PHONY: phpunit
-phpunit: ## Application: <composer test>
+phpunit: up ## Application: <composer test>
 	$(call runDockerComposeExecAsUser,composer test)
 
 .PHONY: tests
