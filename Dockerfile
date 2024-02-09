@@ -51,7 +51,6 @@ FROM base AS build-production
 ENV ENV=PRODUCTION
 
 RUN apk update && apk add --no-cache \
-    	bash \
     	fcgi \
     && mkdir /output \ 
     && chown www-data:www-data /output
