@@ -2,19 +2,20 @@
 
 # Dockerized PHP
 
-> A Docker container with a lightweight PHP development environment supporting **self signed local domains** powered by Caddy
+> A Docker container containing PHP-FPM
 
 [TOC]
 
 ## Summary
 
-This repository contains a Docker container based on **php:8.3.2-fpm-alpine3.19** allowing you to create <u>microservices</u> and/or <u>web applications</u> using Caddy and Buggregator.
+This repository contains a Docker container based on **php:8.3.2-fpm-alpine3.19** allowing you to create <u>microservices</u> and/or <u>web applications</u> using Caddy.
 
 ### Highlights
 
 - **Self-signed local domains** thanks to Caddy.
 - Unified environment to build CLI and/or web applications with **PHP8**.
 - Code Coverage, PHPUnit, Paratest, PHPInsights, PHPStan and Linters by default.
+- Allows you to create an **optimized production-ready** Docker image. 
 - Includes [Buggregator](https://buggregator.dev) as main debug server.
 
 ## Requirements
@@ -57,7 +58,7 @@ $ git clone git@github.com:fonil/dockerized-php.git .
 
 #### Build Arguments
 
-To avoid file permissions conflicts between host and container, a non-root user is created into the service with the same ID and group name than the current host user and setting up PHP-FPM to be executed using those details so, any file created by the service will have the same owner/group than the host user.
+To avoid any possible file permissions between host and shared volumes with the container service, a non-root user is created into the container with same credentials than the host user and forcing to PHP-FPM to be running as this user. With this setup any recently created file in the container service can be shared with the host without any file permission issue. 
 
 Those details are collected from the `Makefile` and passing the values to Dockerfile as build arguments: 
 
@@ -186,14 +187,6 @@ Development environment allows you to develop, test and debug your application u
 Production environment allows you deploy the generated container service without any development extension.
 
 #### Development vs Production
-
-##### Docker Compose files
-
-| Docker Compose file | DEVELOPMENT                                    | PRODUCTION                      |
-| ------------------- | ---------------------------------------------- | ------------------------------- |
-| Application         | ``docker-compose-development.yml``             | `docker-compose-production.yml` |
-| Caddy               | ``docker-compose-development.caddy.yml``       | ⨉                               |
-| Buggregator         | ``docker-compose-development.buggregator.yml`` | ⨉                               |
 
 ##### Applicacions & Extensions
 
