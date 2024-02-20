@@ -8,7 +8,7 @@
 
 ## Summary
 
-This repository contains a Docker container based on **php:8.3.2-fpm-alpine3.19** allowing you to create <u>microservices</u> and/or <u>web applications</u> using Caddy.
+This repository contains a Docker container based on **php:8.3.3-fpm-alpine** allowing you to create <u>microservices</u> and/or <u>web applications</u> using Caddy.
 
 ### Highlights
 

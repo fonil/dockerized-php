@@ -4,7 +4,7 @@
 # Installs the multi-stage common extensions
 #-------------
 
-FROM php:8.3.2-fpm-alpine3.19 AS extensions-builder
+FROM php:8.3.3-fpm-alpine AS extensions-builder
 
 RUN curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o - | sh -s \
         zip
@@ -13,7 +13,7 @@ RUN curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases
 # Creates a new stage with ONLY the compiled extensions
 #-------------
 
-FROM php:8.3.2-fpm-alpine3.19 AS base
+FROM php:8.3.3-fpm-alpine AS base
 
 COPY --from=extensions-builder /usr/local/lib/php/extensions/*/* /usr/local/lib/php/extensions/no-debug-non-zts-20230831/
 
